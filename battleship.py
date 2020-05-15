@@ -21,6 +21,8 @@ class Game:
 		self.p2Board = np.zeros((self.BOARD_SIZE, self.BOARD_SIZE))
 		self.turn = 1
 		self.state = 'setup'
+		self.p1Ships = self.NUM_SHIPS
+		self.p2Ships = self.NUM_SHIPS
 
 
 	def p1Input(self,input):
@@ -151,12 +153,14 @@ class Game:
 		x = self.p1Board[coords[1]][coords[0]]
 		if x==0: #hit water
 			self.p1Board[coords[1]][coords[0]] = -1
+			self.broadcastP2("miss")
 			return False
 		if x ==1: #hit ship
 			self.p1Board[coords[1]][coords[0]] = 2
+			self.broadcastP2("hit")
 			return True
 		else:
-			self.broadcastP1("repeated fire")
+			self.broadcastP2("repeated fire")
 
 
 	# checks to see in player has won and, if so, broadcasts the win and resets the game
@@ -201,17 +205,17 @@ class Game:
 			print("hidden P1 Board:")
 			print(np.where(self.p1Board == 1, 0, self.p1Board)) #hides un-hit ships
 
-g = Game()
-g.p1Input([(0,9),'V'])
-g.p1Input([(9,0),'H'])
-g.p1Input([(0,7),'V'])
-g.p1Input([(2,2),'V'])
-g.p1Input([(5,3),'H'])
-g.state = 'play'
-g.p2Board[1][1]=1
-g.p1Input([0,1])
-g.p1Input([1,1])
-g.turn=1
-g.p1Input([1,1])
+# g = Game()
+# g.p1Input([(0,9),'V'])
+# g.p1Input([(9,0),'H'])
+# g.p1Input([(0,7),'V'])
+# g.p1Input([(2,2),'V'])
+# g.p1Input([(5,3),'H'])
+# g.state = 'play'
+# g.p2Board[1][1]=1
+# g.p1Input([0,1])
+# g.p1Input([1,1])
+# g.turn=1
+# g.p1Input([1,1])
 
 
