@@ -3,6 +3,7 @@
 #include <stdio.h> 
 #include <sys/socket.h> 
 #include <stdlib.h> 
+#include <arpa/inet.h>
 #include <netinet/in.h> 
 #include <string.h> 
 #define PORT 8080 
@@ -65,25 +66,29 @@ int main(int argc, char const *argv[]){
     addrlen = sizeof(address);
     clientfd = accept(servfd, (struct sockaddr *) &address, (socklen_t*) &addrlen);
     if (clientfd < 0){ 
-        perror("accept faileed"); 
+        perror("accept failed"); 
         exit(EXIT_FAILURE); 
     } 
     else{
-        printf("Connection established client @ IP %s.\n", inet_ntoa(address.sin_addr));
+        char dst[INET_ADDRSTRLEN+1];
+        printf("Connection established client with IP %s.\n",
+            inet_ntop(AF_INET, &(address.sin_addr), dst, INET_ADDRSTRLEN));
     }
 
 
+    char* start_message = "Player please start placing battleship!\n";
+    send(clientfd , start_message, strlen(start_message) , 0 );
     //read the message recieved 
     while (valread = read(clientfd, buffer, BUF_SIZE)){
         printf("Recieved from client: %s\n",buffer);
+        for(int j=0;j<BUF_SIZE;j++) buffer[j] = 0;
 
         //send to client
         valread = read(STDIN_FILENO , buffer, BUF_SIZE); 
         send(clientfd , buffer, BUF_SIZE , 0 ); 
         printf("Message sent: %s\n", buffer); 
-
+        for(int j=0;j<=BUF_SIZE;j++) buffer[j] = 0;
     }
-    
     close(servfd);
     return 0; 
 } 
