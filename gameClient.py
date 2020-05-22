@@ -12,41 +12,175 @@ Author: Ansel Tessier (at9088@bard.edu)
 import sys
 import numpy
 import socket
+import curses
+import sys,os
 
-
+#seting up sockets
 HOST = '127.0.0.1' ## NOTE: this is using localhost for dev, must change
 PORT = 65432
-
+setup = True
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((HOST, PORT))
 
-def make_move():
-    ## TODO: take user input and send it to server
-    target = bytes(input("Enter Coordinates:"),'utf-8')
+#seting up curses wrapper
+stdscr = curses.initscr()
+curses.noecho()
+curses.cbreak()
+stdscr.keypad(True)
+
+#manually setting up boards for testing
+enemyboard = numpy.ones((10,10), dtype=None, order='c')
+for i in range(0,9):
+    for j in range(0,9):
+        #render water
+        enemyboard[i][j] = 0
+
+myboard = numpy.ones((10,10), dtype=None, order='c')
+for i in range(0,9):
+    for j in range(0,9):
+        #render water
+        myboard[i][j] = 0
+myboard[4][5] = 2
+myboard[4][6] = 1
+myboard[4][7] = 1
+
+myboard[6][3] = 1
+myboard[7][3] = 2
+myboard[8][3] = 1
+
+myboard[1][0] = 1
+myboard[1][1] = 1
+myboard[1][2] = 1
+
+myboard[0][4] = 2
+myboard[1][4] = 2
+myboard[2][4] = 2
+
+
+#sends your move to the server as a byte object
+def make_move(pos):
+    target = bytes(str(pos),'utf-8')
     s.sendall(target)
 
+# TODO: s.recv dosen't play well with sockets
 def recive_update():
-    # TODO: listen to server and update local map acordingly
+    myboard = s.recv(4096)
+    #if(update = "setup")
 
-    update = s.recv(1024)
+    # TODO: look for message that switches game state
+    #may need to convert update from bytes to numpyarray
 
-def draw_board():
-    print("todo")
+#renders game to terminal
+def draw_board(stdscr):
+    k = 0
+    cursor_x = 0
+    cursor_y = 0
 
+    # Clear and refresh the screen for a blank canvas
+    stdscr.clear()
+    stdscr.refresh()
+
+    # Start colors in curses
+    curses.start_color()
+    curses.init_pair(1, curses.COLOR_CYAN, curses.COLOR_BLACK)
+    curses.init_pair(2, curses.COLOR_RED, curses.COLOR_BLACK)
+    curses.init_pair(3, curses.COLOR_BLACK, curses.COLOR_WHITE)
+
+    # Loop where k is the last character pressed
+    while (k != ord('q')):
+
+        # Initialization
+        stdscr.clear()
+        height, width = stdscr.getmaxyx()
+
+        if k == curses.KEY_DOWN:
+            cursor_y = cursor_y + 2
+        elif k == curses.KEY_UP:
+            cursor_y = cursor_y - 2
+        elif k == curses.KEY_RIGHT:
+            cursor_x = cursor_x + 4
+        elif k == curses.KEY_LEFT:
+            cursor_x = cursor_x - 4
+
+        cursor_x = max(0, cursor_x)
+        cursor_x = min(width-1, cursor_x)
+
+        cursor_y = max(0, cursor_y)
+        cursor_y = min(height-1, cursor_y)
+
+        if k == ord(' '):
+            make_move((cursor_x//4, cursor_y//2))
+
+        #status bar
+        statusbarstr = "Press 'q' to exit | Target with arrow keys, fire with space | Target: {}, {}".format(cursor_x//4, cursor_y//2)
+        stdscr.attron(curses.color_pair(3))
+        stdscr.addstr(height-1, 0, statusbarstr)
+        stdscr.addstr(height-1, len(statusbarstr), " " * (width - len(statusbarstr) - 1))
+        stdscr.attroff(curses.color_pair(3))
+
+        #render enemy
+        stdscr.attron(curses.A_BOLD)
+        for i in range(0,9):
+            for j in range(0,9):
+                #render water
+                if(enemyboard[i][j] == 0):
+                    stdscr.attron(curses.color_pair(1))
+                    stdscr.addch(i*2, j*4, 'o')
+                    stdscr.attroff(curses.color_pair(1))
+
+
+                #render unhit ship
+                elif(enemyboard[i][j] == 1):
+                    stdscr.attron(curses.color_pair(3))
+                    stdscr.addch(i*2, j*4, 'x')
+                    stdscr.attroff(curses.color_pair(3))
+
+                #render hit ship
+                elif(enemyboard[i][j] == 2):
+                    stdscr.attron(curses.color_pair(2))
+                    stdscr.addch(i*2, j*4, 'x')
+                    stdscr.attroff(curses.color_pair(2))
+
+        #render player board
+        for i in range(10,19):
+            for j in range(0,9):
+                #render water
+                if(myboard[i-10][j] == 0):
+                    stdscr.attron(curses.color_pair(1))
+                    stdscr.addch(i*2, j*4, 'o')
+                    stdscr.attroff(curses.color_pair(1))
+
+                #render unhit ship
+                elif(myboard[i-10][j] == 1):
+                    stdscr.attron(curses.color_pair(3))
+                    stdscr.addch(i*2, j*4, 'x')
+                    stdscr.attroff(curses.color_pair(3))
+
+                #render hit ship
+                elif(myboard[i-10][j] == 2):
+                    stdscr.attron(curses.color_pair(2))
+                    stdscr.addch(i*2, j*4, 'x')
+                    stdscr.attroff(curses.color_pair(2))
+        stdscr.attroff(curses.A_BOLD)
+
+        #render enemy boards
+        #for i in range(0,9):
+        #    for j in range(0,9):
+
+        stdscr.move(cursor_y, cursor_x)
+        # Refresh the screen
+        stdscr.refresh()
+
+        # Wait for next input
+        k = stdscr.getch()
+
+        #recive_update()
 
 
 
 """main fruntion calls game and server functionality"""
 def main():
-    #with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        #s.connect((HOST, PORT))
-        #s.sendall(make_move())
-        #data = s.recv(1024)
-    while 1:
-        make_move()
-        recive_update()
-
-
+    curses.wrapper(draw_board)
 
 
 if __name__ == "__main__":
