@@ -138,10 +138,12 @@ class Game:
 		if x==0: #hit water
 			self.p2Board[coords[1]][coords[0]] = -1
 			self.p1Out.append("miss")
+			self.p2Out.append(["miss",(coords[0],coords[1])])
 			return False
 		if x ==1: #hit ship
 			self.p2Board[coords[1]][coords[0]] = 2
 			self.p1Out.append("hit")
+			self.p2Out.append(["hit", (coords[0], coords[1])])
 			return True
 		else:
 			self.broadcastP1("repeated fire")
@@ -152,10 +154,12 @@ class Game:
 		if x==0: #hit water
 			self.p1Board[coords[1]][coords[0]] = -1
 			self.p2Out.append("miss")
+			self.p1Out.append(["miss", (coords[0], coords[1])])
 			return False
 		if x ==1: #hit ship
 			self.p1Board[coords[1]][coords[0]] = 2
 			self.p2Out.append("hit")
+			self.p1Out.append(["hit", (coords[0], coords[1])])
 			return True
 		else:
 			self.p2Out.append("repeated fire")
@@ -182,12 +186,16 @@ class Game:
 
 	#check if there is a message for P1
 	def broadcastP1(self,msg):
-		return self.p1Out
+		m = self.p1Out
+		self.p1Out = []
+		return m
 
 
 	#check if there is a message for P2
 	def broadcastP2(self,msg):
-		return self.p2Out
+		m = self.p2Out
+		self.p2Out = []
+		return m
 
 
 	#send the appropriate boards to player NO MORE
