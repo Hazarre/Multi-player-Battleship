@@ -10,6 +10,8 @@ class Game:
 	state = 'setup'
 	p1Ships = NUM_SHIPS
 	p2Ships = NUM_SHIPS
+	p1Out = []
+	p2Out = []
 
 
 	def __init__(self):
@@ -40,28 +42,26 @@ class Game:
 							for i in range(3):
 								self.p1Board[startCoord[1]][startCoord[0]+i] = 1
 						self.p1Ships-=1
-						self.broadcastP1("placed a ship. "+str(self.p1Ships)+" left")
+						self.p1Out.append("placed a ship. "+str(self.p1Ships)+" left")
 					else:
-						self.broadcastP1("not a valid ship placement")
-					self.broadcastBoards(1)
+						self.p1Out.append("not a valid ship placement")
 
 				#goto play state
 				if self.p1Ships==0 and self.p2Ships==0:
 					self.state = 'play'
 				elif self.p1Ships==0:
-					self.broadcastP1("waiting for P2 to place ships")
-					self.broadcastP2("P1 ready")
+					self.p1Out.append("waiting for P2 to place ships")
+					self.p2Out.append("P1 ready")
 
 			elif self.state == 'play':
 				if self.turn == 1:
 					self.fireP1(input)
 					self.turn = 2
 					if self.checkWon(1): return
-					self.broadcastBoards(1)
 				else:
-					self.broadcastP1("wait your turn")
+					self.p1Out.append("wait your turn")
 		else:
-			self.broadcastP1("bad input. Try again")
+			self.p1Out.append("bad input. Try again")
 
 
 	def p2Input(self,input):
@@ -79,27 +79,25 @@ class Game:
 							for i in range(3):
 								self.p2Board[startCoord[1]][startCoord[0]+i] = 1
 						self.p2Ships-=1
-						self.broadcastP2("placed a ship. "+str(self.p2Ships)+" left")
+						self.p2Out.append("placed a ship. "+str(self.p2Ships)+" left")
 					else:
-						self.broadcastP2("not a valid ship placement")
-					self.broadcastBoards(2)
+						self.p2Out.append("not a valid ship placement")
 				#goto play state
 				if self.p1Ships==0 and self.p2Ships==0:
 					self.state = 'play'
 				elif self.p2Ships==0:
-					self.broadcastP2("waiting for P1 to place ships")
-					self.broadcastP1("P2 ready")
+					self.p2Out.append("waiting for P1 to place ships")
+					self.p1Out.append("P2 ready")
 
 			elif self.state == 'play':
 				if self.turn == 2:
 					self.fireP2(input)
 					self.turn = 1
 					if self.checkWon(2): return
-					self.broadcastBoards(2)
 				else:
-					self.broadcastP1("wait your turn")
+					self.p1Out.append("wait your turn")
 		else:
-			self.broadcastP1("bad input. Try again")
+			self.p2Out.append("bad input. Try again")
 
 
 	# this method checks if the input is of valid format for the game state
@@ -139,11 +137,11 @@ class Game:
 		x = self.p2Board[coords[1]][coords[0]]
 		if x==0: #hit water
 			self.p2Board[coords[1]][coords[0]] = -1
-			self.broadcastP1("miss")
+			self.p1Out.append("miss")
 			return False
 		if x ==1: #hit ship
 			self.p2Board[coords[1]][coords[0]] = 2
-			self.broadcastP1("hit")
+			self.p1Out.append("hit")
 			return True
 		else:
 			self.broadcastP1("repeated fire")
@@ -153,14 +151,14 @@ class Game:
 		x = self.p1Board[coords[1]][coords[0]]
 		if x==0: #hit water
 			self.p1Board[coords[1]][coords[0]] = -1
-			self.broadcastP2("miss")
+			self.p2Out.append("miss")
 			return False
 		if x ==1: #hit ship
 			self.p1Board[coords[1]][coords[0]] = 2
-			self.broadcastP2("hit")
+			self.p2Out.append("hit")
 			return True
 		else:
-			self.broadcastP2("repeated fire")
+			self.p2Out.append("repeated fire")
 
 
 	# checks to see in player has won and, if so, broadcasts the win and resets the game
@@ -178,21 +176,21 @@ class Game:
 
 	#send game over message to both players
 	def broadcastWin(self,winner):
-		self.broadcastP1("winner is P"+str(winner)+"!")
-		self.broadcastP2("winner is P" + str(winner) + "!")
+		self.p1Out.append("winner is P"+str(winner)+"!")
+		self.p2Out.append("winner is P" + str(winner) + "!")
 
 
-	#send p1 a message
+	#check if there is a message for P1
 	def broadcastP1(self,msg):
-		print("P1:",msg)
+		return self.p1Out
 
 
-	#send P2 a message
+	#check if there is a message for P2
 	def broadcastP2(self,msg):
-		print("P2:",msg)
+		return self.p2Out
 
 
-	#send the appropriate boards to player
+	#send the appropriate boards to player NO MORE
 	def broadcastBoards(self,player):
 		if player==1:
 			print("P1 Board:")
