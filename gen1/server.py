@@ -7,34 +7,44 @@ NUM_SHIPS = 3
 BUFFER_SIZE = 1024
 
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.bind((socket.gethostname(), PORT))
-s.listen(50)
-
-
 def game_start(p1sock, p2sock):
     for i in range(NUM_SHIPS):
         p1sock.send("Please place your number %d ship: " % i)
         move = p1sock.recv(BUFFER_SIZE)
-	print("recieved move %s from player 1" % move)
-
+        print("recieved move %s from player 1" % move)
+    p1sock.send("Wait for player 2 to place their ship.")
+    
     for i in range(NUM_SHIPS):
         p2sock.send("Please place younumber %d ship: " % i)
         move = p2sock.recv(BUFFER_SIZE)
         print("player2 move %s" % move)
+    
+    GAME = True
+    while GAME:
+        p1sock.send("Please fire your missle (x,y) " % i)
+        move = p1sock.recv(BUFFER_SIZE)
+        #updategame(move, player1)
+        p2sock.sendall("Your enemy fired a missle at %s, it's your turn to fire back. Enter the coordinate (x,y)" % move)
+        move = p2sock.recv(BUFFER_SIZE)
+        #updategame(move, player2)
+        # optional swap(player1, player2) => might be bard to combine with battleship.py
+
    
- while
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.bind((socket.gethostname(), PORT))
+s.listen(50)
 print("waiting")
 while True:
     try:
         p1sock, p1addr = s.accept()
         print("connected to player 1")
-        # p2sock, p2addr = s.accept()
-        # print("connected to 2 client's")
-        p = Process(target=game_start, args=(p1sock,0 ))
+        p2sock, p2addr = s.accept()
+        print("connected to 2 client's")
+        p = Process(target=game_start, args=(p1sock, p2sock))
         p.start()
     except socket.error:
-        break
+        print('got a socket error')
         sleep(10)
-print('got a socket error')
+        break
 s.close()
