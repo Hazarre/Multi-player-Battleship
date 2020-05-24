@@ -1,8 +1,10 @@
+from multiprocessing import Process
 import socket
 PORT = 8080
 PORT2 = 8081
 NUM_SHIPS = 3
 BUFFER_SIZE = 1024
+
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind((socket.gethostname(), PORT))
