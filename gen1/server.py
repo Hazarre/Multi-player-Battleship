@@ -20,10 +20,11 @@ def game_start(p1sock, p2sock):
         print("player2 move %s" % move)
     
     GAME = True
-    ROUND = 0 
+    FIRSTROUND = True
     while GAME:
-        if round == 0:
+        if FIRSTROUND:
             p1sock.send("Please fire your missle (x,y) ")
+            FIRSTROUND = False
         else: 
             p1sock.sendall("Your enemy fired a missle at %s, it's your turn to fire back. Enter the coordinate (x,y)" % move)
         move = p1sock.recv(BUFFER_SIZE)
