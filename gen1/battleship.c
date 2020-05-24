@@ -1,21 +1,11 @@
-import numpy as np
+#define BOARD_SIZE 10;
+#define NUM_SHIPS 3;
+#define TOTAL_HITS_TO_WIN
 
-
-class Game:
-	BOARD_SIZE = 10
-	NUM_SHIPS = 3
-	p1Board = np.zeros((BOARD_SIZE, BOARD_SIZE))
-	p2Board = np.zeros((BOARD_SIZE, BOARD_SIZE))
-	turn = 1
-	state = 'setup'
-	p1Ships = NUM_SHIPS
-	p2Ships = NUM_SHIPS
-	p1Out = []
-	p2Out = []
-
-
-	def __init__(self):
-		self.reset()
+struct Game{
+    char board[2][BOARD_SIZE][BOARD_SIZE] = {0};
+    char hits[2];
+};
 
 
 	def reset(self):

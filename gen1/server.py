@@ -1,5 +1,6 @@
 import socket
 PORT = 8080
+PORT2 = 8081
 NUM_SHIPS = 3
 BUFFER_SIZE = 1024
 
@@ -18,11 +19,11 @@ def process_start(p1sock, p2sock):
     for i in range(NUM_SHIPS):
         p2sock.send("Please place you ship:")
 
-
-
+print("waiting")
 while True:
     try:
         p1sock, p1addr = s.accept()
+        print("connected to player 1")
         p2sock, p2addr = s.accept()
         print("connected to 2 client's")
         p = Process(target=Battleshipgame_start, args=(p1sock, p2sock))
