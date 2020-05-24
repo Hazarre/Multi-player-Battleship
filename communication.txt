@@ -1,0 +1,23 @@
+Program files:
+Client:
+	- Graphics
+	- Uin -> server
+	- Keep track of most recent game state
+	- Listen to server for game state updates
+Server:
+	- Keep game objects
+	- Facilitate communication between Cs and G objs
+		○ Call methods of G objs
+		○ Networky thing to Cs
+Game(battleship.py):
+	- Game logic
+	- Keeps the objective boards
+	- Takes player input from server
+	- Sends msgs for players to server
+
+MSG types:
+	1. Fire messages, [int,int], [coords], C->S
+	2. Placement messages, [int,int,bool], [coords,vertical?], C->S
+	3. Fire result messages, [int,int,bool], [coords,hit?], S->C
+	4. Flag messages, [int,int], [flag#, optional communication], S->C
+	ints could probably be shorts. they just need to store up to max(N,#flags)
