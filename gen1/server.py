@@ -11,10 +11,12 @@ s.bind((socket.gethostname(), PORT))
 s.listen(50)
 
 
-def process_start(p1sock, p2sock):
+def game_start(p1sock, p2sock):
     p1sock.send("You are player1")
     for i in range(NUM_SHIPS):
-        p1sock.sendall("Please place your # %d ship: " % i)
+        print("here1")
+        p1sock.send("Please place your # %d ship: " % i)
+        print("here2")
         p1sock.recv(BUFFER_SIZE)
 
     p2sock.send("You are player2")
@@ -28,7 +30,7 @@ while True:
         print("connected to player 1")
         p2sock, p2addr = s.accept()
         print("connected to 2 client's")
-        p = Process(target=Battleshipgame_start, args=(p1sock, p2sock))
+        p = Process(target=game_start, args=(p1sock, p2sock))
         p.start()
     except socket.error:
         print('got a socket error')
