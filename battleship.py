@@ -1,11 +1,9 @@
-import numpy as np
-
 
 class Game:
 	BOARD_SIZE = 10
 	NUM_SHIPS = 3
-	p1Board = np.zeros((BOARD_SIZE, BOARD_SIZE))
-	p2Board = np.zeros((BOARD_SIZE, BOARD_SIZE))
+	p1Board = [[0]*BOARD_SIZE for _ in range(BOARD_SIZE)]
+	p2Board = [[0]*BOARD_SIZE for _ in range(BOARD_SIZE)]
 	turn = 1
 	state = 'setup'
 	p1Ships = NUM_SHIPS
@@ -19,8 +17,8 @@ class Game:
 
 
 	def reset(self):
-		self.p1Board = np.zeros((self.BOARD_SIZE, self.BOARD_SIZE))
-		self.p2Board = np.zeros((self.BOARD_SIZE, self.BOARD_SIZE))
+		self.p1Board = [[0]*self.BOARD_SIZE for _ in range(self.BOARD_SIZE)]
+		self.p2Board = [[0]*self.BOARD_SIZE for _ in range(self.BOARD_SIZE)]
 		self.turn = 1
 		self.state = 'setup'
 		self.p1Ships = self.NUM_SHIPS
@@ -168,10 +166,10 @@ class Game:
 	# checks to see in player has won and, if so, broadcasts the win and resets the game
 	def checkWon(self,player):
 		if player == 1:
-			hit = np.where(self.p2Board == 1, 1,0)
+			board = self.p2Board
 		else: #player == 2
-			hit = np.where(self.p1Board == 1, 1,0)
-		numfloating = np.sum(np.sum(hit))
+			board = self.p1Board
+		numfloating =self.numFloating(board)
 		if numfloating==0:
 			self.broadcastWin(player)
 			self.reset()
@@ -198,18 +196,14 @@ class Game:
 		return m
 
 
-	#send the appropriate boards to player NO MORE
-	def broadcastBoards(self,player):
-		if player==1:
-			print("P1 Board:")
-			print(self.p1Board)
-			print("hidden P2 Board:")
-			print(np.where(self.p2Board==1,0,self.p2Board)) #hides un-hit ships
-		else:
-			print("P2 Board:")
-			print(self.p2Board)
-			print("hidden P1 Board:")
-			print(np.where(self.p1Board == 1, 0, self.p1Board)) #hides un-hit ships
+	def numFloating(self, board):
+		num = 0
+		for i in board:
+			for j in i:
+				if j == 1:
+					num+=1
+		return num
+
 
 # g = Game()
 # g.p1Input([(0,9),'V'])
