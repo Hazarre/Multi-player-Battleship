@@ -20,14 +20,18 @@ def game_start(p1sock, p2sock):
         print("player2 move %s" % move)
     
     GAME = True
+    ROUND = 0 
     while GAME:
-        p1sock.send("Please fire your missle (x,y) " % i)
+        if round == 0:
+            p1sock.send("Please fire your missle (x,y) ")
+        else: 
+            p1sock.sendall("Your enemy fired a missle at %s, it's your turn to fire back. Enter the coordinate (x,y)" % move)
         move = p1sock.recv(BUFFER_SIZE)
         #updategame(move, player1)
         p2sock.sendall("Your enemy fired a missle at %s, it's your turn to fire back. Enter the coordinate (x,y)" % move)
         move = p2sock.recv(BUFFER_SIZE)
         #updategame(move, player2)
-        # optional swap(player1, player2) => might be bard to combine with battleship.py
+       
 
    
 
@@ -40,7 +44,7 @@ while True:
         p1sock, p1addr = s.accept()
         print("connected to player 1")
         p2sock, p2addr = s.accept()
-        print("connected to 2 client's")
+        print("connected to player 2")
         p = Process(target=game_start, args=(p1sock, p2sock))
         p.start()
     except socket.error:
