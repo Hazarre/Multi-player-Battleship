@@ -22,7 +22,7 @@ int main(int argc, char const *argv[]) {
 	serv_addr.sin_family = AF_INET; 
 	serv_addr.sin_port = htons(PORT); 
 	// Convert IPv4 and IPv6 addresses from text to binary form 
-	if(inet_pton(AF_INET, "18.209.174.234", &serv_addr.sin_addr)<=0){ 
+	if(inet_pton(AF_INET, "54.81.106.48", &serv_addr.sin_addr)<=0){ 
 		printf("\nInvalid address/ Address not supported \n"); 
 		return -1; 
 	} 
@@ -43,11 +43,11 @@ int main(int argc, char const *argv[]) {
 	  // Move data is stored in buffer
 	  // Recieve opponents move from server
 	  printf("Recieved from server: %s\n", buffer); 
-	  player=buffer[0];
-	  type = buffer[1];
-	  x    = buffer[2];
-	  y    = buffer[3];
-	  direction = buffer[4];
+	//   player=buffer[0];
+	//   type = buffer[1];
+	//   x    = buffer[2];
+	//   y    = buffer[3];
+	//   direction = buffer[4];
 	  // call some game API opponent_move(type, x, y, direction);
       // to update the game status based on the opponents move.
 	  for(int j=0;j<=BUF_SIZE;j++) buffer[j] = 0;

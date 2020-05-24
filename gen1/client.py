@@ -1,13 +1,13 @@
-#!/usr/bin/env python3
-
 import socket
+PORT = 8080
+BUFFER_SIZE = 1024
 
-HOST = '54.81.106.48'  # The server's hostname or IP address
-PORT = 8080        # The port used by the server
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect(('54.81.106.48', PORT))
 
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    s.connect((HOST, PORT))
-    s.sendall(b'Hello, world')
-    data = s.recv(1024)
+PLAY_GAME = True:
 
-print('Received', repr(data))
+while PLAY_GAME:
+    mes = s.recv(BUFFER_SIZE) 
+    move = input(mes)
+    s.sendall(move)

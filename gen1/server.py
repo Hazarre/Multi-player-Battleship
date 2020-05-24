@@ -1,18 +1,32 @@
-#!/usr/bin/env python3
-
 import socket
+PORT = 8080
+NUM_SHIPS = 3
+BUFFER_SIZE = 1024
 
-HOST = '54.81.106.48'  # The server's hostname or IP address
-PORT = 8080           # The port used by the server
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.bind((socket.gethostname(), PORT))
+s.listen(50)
 
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    s.bind((HOST, PORT))
-    s.listen()
-    conn, addr = s.accept()
-    with conn:
-        print('Connected by', addr)
-        while True:
-            data = conn.recv(1024)
-            if not data:
-                break
-            conn.sendall(data)
+
+def process_start(p1sock, p2sock):
+    p1sock.send("You are player1")
+    for i in range(NUM_SHIPS):
+        p1sock.sendall("Please place your # %d ship: " % i)
+        p1sock.recv(BUFFER_SIZE)
+
+    p2sock.send("You are player2")
+    for i in range(NUM_SHIPS):
+        p2sock.send("Please place you ship:")
+
+
+
+while True:
+    try:
+        p1sock, p1addr = s.accept()
+        p2sock, p2addr = s.accept()
+        print("connected to 2 client's")
+        p = Process(target=Battleshipgame_start, args=(p1sock, p2sock))
+        p.start()
+    except socket.error:
+        print('got a socket error')
+    s.close()
