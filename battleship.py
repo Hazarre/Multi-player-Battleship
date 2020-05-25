@@ -13,8 +13,10 @@ ORIENTATION = {'V': True, 'H': False}
 class Game:
 	BOARD_SIZE = 10
 	NUM_SHIPS = 3
-	p1Board = [[0] * BOARD_SIZE for _ in range(BOARD_SIZE)]
-	p2Board = [[0] * BOARD_SIZE for _ in range(BOARD_SIZE)]
+	#p1Board = [[0] * BOARD_SIZE for _ in range(BOARD_SIZE)]
+	p1Board =[]
+	p2Board=[]
+	#p2Board = [[0] * BOARD_SIZE for _ in range(BOARD_SIZE)]
 	turn = 1
 	state = 'setup'
 	p1Ships = NUM_SHIPS
