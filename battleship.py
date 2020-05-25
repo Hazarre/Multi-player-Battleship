@@ -44,7 +44,7 @@ class Game:
 					orientation = input[1]
 					if self.validShip(input, 1):
 						# place a ship
-						if orientation == 'V':
+						if orientation == ORIENTATION['V']:
 							for i in range(3):
 								self.p1Board[startCoord[1] + i][startCoord[0]] = 1
 						else:
@@ -80,7 +80,7 @@ class Game:
 					orientation = input[1]
 					if self.validShip(input, 2):
 						# place a ship
-						if orientation == 'V':
+						if orientation == ORIENTATION['V']:
 							for i in range(3):
 								self.p2Board[startCoord[1] + i][startCoord[0]] = 1
 						else:
@@ -108,7 +108,6 @@ class Game:
 			self.p2Out.append([FLAGS['bad input'],-1])
 
 	# this method checks if the input is of valid format for the game state
-	# TODO update
 	def inputCheck(self, input):
 		if self.state == 'setup':
 			return isinstance(input, list) and len(input) == 2 and isinstance(input[1], str) and \
@@ -129,7 +128,7 @@ class Game:
 		startCoord = input[0]
 		orientation = input[1]
 
-		if orientation == 'V':
+		if orientation == ORIENTATION['V']:
 			if startCoord[1] > self.BOARD_SIZE - 3: return False
 			for y in range(3):
 				if board[startCoord[1] + y][startCoord[0]] == 1: return False
