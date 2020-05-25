@@ -17,7 +17,21 @@ Game(battleship.py):
 
 MSG types:
 	1. Fire messages, [int,int], [coords], C->S
-	2. Placement messages, [int,int,bool], [coords,vertical?], C->S
-	3. Fire result messages, [int,int,bool], [coords,hit?], S->C
+	2. Placement messages, [bool,int,int], [coords,vertical?], C->S
+	3. Fire result messages (other player), [bool,int,int], [coords,hit?], S->C
 	4. Flag messages, [int,int], [flag#, optional communication], S->C
 	ints could probably be shorts. they just need to store up to max(N,#flags)
+
+Flags:
+    flags are a type of S->C communication of a game event. they take the form of [flag#,optional2ndNumber]. The flag#
+    is the code of the event. Sometimes an event will have a 2nd number associated with it in which case the opt2ndNum
+    will be used. If it is not in use it wll default to -1
+FLAGS = {'bad input': 0,
+				 'wait your turn': 1,
+				'waiting for other player to place ships': 2,
+				 'not a valid ship placement': 3,
+				 'other player ready': 4,
+				 'placed a ship' : 5, #2nd num = # ships left
+				'repeated fire' : 6,
+				 'game over' : 7,  #2nd num = player# is winner
+				 'fire result' : 8} #2nd num -> bool = hit?
