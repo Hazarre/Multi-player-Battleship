@@ -9,7 +9,7 @@ and sending out moves on players turn.
 Author: Ansel Tessier (at9088@bard.edu)
 """
 
-import sys
+
 import numpy
 import socket
 import curses
@@ -21,6 +21,7 @@ PORT = 65432
 setup = True
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((HOST, PORT))
+s.setblocking(0)
 
 #seting up curses wrapper
 stdscr = curses.initscr()
@@ -29,32 +30,9 @@ curses.cbreak()
 stdscr.keypad(True)
 
 #manually setting up boards for testing
-enemyboard = numpy.ones((10,10), dtype=None, order='c')
-for i in range(0,9):
-    for j in range(0,9):
-        #render water
-        enemyboard[i][j] = 0
+enemyboard = numpy.zeros((10,10), dtype=None, order='c')
+myboard = numpy.zeros((10,10), dtype=None, order='c')
 
-myboard = numpy.ones((10,10), dtype=None, order='c')
-for i in range(0,9):
-    for j in range(0,9):
-        #render water
-        myboard[i][j] = 0
-myboard[4][5] = 2
-myboard[4][6] = 1
-myboard[4][7] = 1
-
-myboard[6][3] = 1
-myboard[7][3] = 2
-myboard[8][3] = 1
-
-myboard[1][0] = 1
-myboard[1][1] = 1
-myboard[1][2] = 1
-
-myboard[0][4] = 2
-myboard[1][4] = 2
-myboard[2][4] = 2
 
 
 #sends your move to the server as a byte object
@@ -72,6 +50,7 @@ def recive_update():
 
 #renders game to terminal
 def draw_board(stdscr):
+    print("here")
     k = 0
     cursor_x = 0
     cursor_y = 0
@@ -118,54 +97,40 @@ def draw_board(stdscr):
         stdscr.addstr(height-1, len(statusbarstr), " " * (width - len(statusbarstr) - 1))
         stdscr.attroff(curses.color_pair(3))
 
-        #render enemy
         stdscr.attron(curses.A_BOLD)
-        for i in range(0,9):
+        for i in range(0,9): #rendering boards
             for j in range(0,9):
-                #render water
-                if(enemyboard[i][j] == 0):
-                    stdscr.attron(curses.color_pair(1))
-                    stdscr.addch(i*2, j*4, 'o')
-                    stdscr.attroff(curses.color_pair(1))
+                try:
+                    if(enemyboard[i][j] == 0): #drawing water
+                        stdscr.attron(curses.color_pair(1))
+                        stdscr.addch(i*2, j*4, 'o')
+                        stdscr.attroff(curses.color_pair(1))
+                    elif(enemyboard[i][j] == 1): #drawing unhit ship
+                        stdscr.attron(curses.color_pair(3))
+                        stdscr.addch(i*2, j*4, 'x')
+                        stdscr.attroff(curses.color_pair(3))
+                    elif(enemyboard[i][j] == 2): #drawing hit ship
+                        stdscr.attron(curses.color_pair(2))
+                        stdscr.addch(i*2, j*4, 'x')
+                        stdscr.attroff(curses.color_pair(2))
 
+                    if(myboard[i][j] == 0):
+                        stdscr.attron(curses.color_pair(1))
+                        stdscr.addch((i+10)*2, j*4, ord('o'))
+                        stdscr.attroff(curses.color_pair(1))
+                    elif(myboard[i][j] == 1):
+                        stdscr.attron(curses.color_pair(3))
+                        stdscr.addch((i+10)*2, j*4, 'x')
+                        stdscr.attroff(curses.color_pair(3))
+                    elif(myboard[i][j] == 2):
+                        stdscr.attron(curses.color_pair(2))
+                        stdscr.addch((i+10)*2, j*4, 'x')
+                        stdscr.attroff(curses.color_pair(2))
 
-                #render unhit ship
-                elif(enemyboard[i][j] == 1):
-                    stdscr.attron(curses.color_pair(3))
-                    stdscr.addch(i*2, j*4, 'x')
-                    stdscr.attroff(curses.color_pair(3))
+                except(curses.error):
+                    pass
 
-                #render hit ship
-                elif(enemyboard[i][j] == 2):
-                    stdscr.attron(curses.color_pair(2))
-                    stdscr.addch(i*2, j*4, 'x')
-                    stdscr.attroff(curses.color_pair(2))
-
-        #render player board
-        for i in range(10,19):
-            for j in range(0,9):
-                #render water
-                if(myboard[i-10][j] == 0):
-                    stdscr.attron(curses.color_pair(1))
-                    stdscr.addch(i*2, j*4, 'o')
-                    stdscr.attroff(curses.color_pair(1))
-
-                #render unhit ship
-                elif(myboard[i-10][j] == 1):
-                    stdscr.attron(curses.color_pair(3))
-                    stdscr.addch(i*2, j*4, 'x')
-                    stdscr.attroff(curses.color_pair(3))
-
-                #render hit ship
-                elif(myboard[i-10][j] == 2):
-                    stdscr.attron(curses.color_pair(2))
-                    stdscr.addch(i*2, j*4, 'x')
-                    stdscr.attroff(curses.color_pair(2))
         stdscr.attroff(curses.A_BOLD)
-
-        #render enemy boards
-        #for i in range(0,9):
-        #    for j in range(0,9):
 
         stdscr.move(cursor_y, cursor_x)
         # Refresh the screen
