@@ -14,8 +14,7 @@ STATE ={'setup':0,      # possible game states
 
 MESSAGE_DECODING = ['my_turn','waiting','input_error','placement_success','target_hit','target_miss','you_loss','you_win']
 MESSAGE_ENCODING = {}
-for i in range(len(MESSAGE)):
-    MESSAGE_DECODING = MESS
+for i in range(len(MESSAGE_DECODING)):
     MESSAGE_ENCODING[MESSAGE_DECODING[i]] = str(i) 
 
 ORIENTATION = {'V': 1, 'H': 0, 'v': 1, 'h':0}
