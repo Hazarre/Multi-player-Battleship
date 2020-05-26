@@ -7,6 +7,8 @@ s.connect(('54.81.106.48', PORT))
 PLAY_GAME = True
 
 while PLAY_GAME:
+    print("recving")
     mes = s.recv(BUFFER_SIZE) 
     move = raw_input(mes)
     s.sendall(move)
+    print("sent mes")

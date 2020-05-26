@@ -36,30 +36,32 @@ def game_start(p1sock, p2sock):
 
 # Use this one 
 def run_game(p1sock, p2sock):
-    g = battleship.Game
+    g = battleship.Game()
     while True:
-        send_messages(g)
+        send_messages_to_player1()
         p1_move = p1sock.recv(BUFFER_SIZE)
-        if p1_move is not None: # TODO change "is not none" to != w/e the default return for recv is
-            print("recieved move %s from player 1" % p1_move)
-            p1_move = parse_move(p1_move)
-            g.p1Input(p1_move)
+        print("recieved move %s from player 1" % p1_move)
+        p1_move = parse_move(p1_move)
+        g.p1Input(p1_move)
+        send_messages_to_player1()
 
+        send_messages_to_player2()
         p2_move = p2sock.recv(BUFFER_SIZE)
-        if p2_move is not None: # TODO change "is not none" to != w/e the default return for recv is
-            print("recieved move %s from player 1" % p2_move)
-            p2_move = parse_move(p2_move)
-            g.p2Input(p2_move)
-
-        send_messages(g)
+        print("recieved move %s from player 1" % p2_move)
+        p2_move = parse_move(p2_move)
+        g.p2Input(p2_move)
+        send_messages_to_player2()
 
 
-def send_messages(game):
-    o1 = game.broadcastP1()
+def send_messages_to_player1():
+    global g, p1sock
+    o1 = g.broadcastP1()
     for msg in o1:
         p1sock.sendall(msg)
 
-    o2 = game.broadcastP2()
+def send_messages_to_player2():
+    global g, p2sock
+    o2 = g.broadcastP2()
     for msg in o2:
         p2sock.sendall(msg)
 
@@ -69,7 +71,7 @@ def parse_move(move):
     move = move.split()
     newMove.append([int(move[0]), int(move[1])])
     if len(move)==3:
-        newMove.append(battleship.ORIENTATION(move[2]))
+        newMove.append(battleship.ORIENTATION[move[2]])
     return newMove
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
