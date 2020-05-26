@@ -2,7 +2,7 @@
 client = True
 
 STATUS = {  'water': 0,
-    'ship': 1,
+            'ship': 1,
             'miss':2,
             'hit':3}
 
@@ -12,7 +12,7 @@ STATE ={'setup':0,      # possible game states
          }
 
 
-MESSAGE_DECODING = ['my_turn','waiting','input_error','placement_success','target_hit','target_miss','you_loss','you_win']
+MESSAGE_DECODING = ['my_turn','waiting','input_error','placement_success','target_hit','target_miss','you_loss','you_win', 'under_fire']
 MESSAGE_ENCODING = {}
 for i in range(len(MESSAGE_DECODING)):
     MESSAGE_ENCODING[MESSAGE_DECODING[i]] = str(i) 
@@ -122,7 +122,6 @@ class Game:
         if self.state ==STATE["gameover"]:
             print("You Lost")
             return
-        print("player %d" % id)
         # process move specified by input string str_in and changes game state
         move = self.parse_input(str_in)
         # player id is 0 for player1 and 1 for player2
@@ -138,6 +137,7 @@ class Game:
                 self.state = STATE["fire"]
         # fire missle at p2
         elif self.state == STATE["fire"]: 
+            o.message = 'under_fire'
             if self.missle_result(move["x"], move['y'], id) == STATUS["hit"]:
                 p.nspots_ontarget += 1
                 p.message = 'target_hit'
@@ -147,6 +147,7 @@ class Game:
             else:
                 p.message = 'target_miss'
         if True:  #self.identity is not "server"
+            print("player %d" % id)
             p.visualize()
         return 
 
@@ -157,7 +158,7 @@ class Game:
             self.players[id].enemy_board[x][y] = result
             return result
         else: 
-
+            # handled by client.py
             # send request to the server for response 
             pass
 

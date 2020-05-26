@@ -13,13 +13,18 @@ class Session:
     def update_state(self, id, state):
         self.psockets[id].sendall(MESSAGE_ENCODING[state].encode("utf-8"))
     def start_game(self):
+        forward = False
         while True:
             for id in range(2):
                 # player id's turn
                 self.update_state(id,'my_turn')
+                forward = self.g.state == STATE["fire"]:
                 move = self.psockets[id].recv(BUFFER_SIZE).decode("utf-8") 
                 print("recieved move %s from player %d" % (move, id+1))
                 self.g.update_game(move,id)
+                if forward: # let enemy know where they got hit
+                    self.update_state((id+1)%2, 'under_fire')
+                    self.psockets[(id+1)%2].sendall(move.encode("utf-8"))
                 if self.g.state == STATE["gameover"]:
                     self.update_state(id, 'you_win')
                     self.update_state((id+1)%2,'you_lost')
