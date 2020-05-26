@@ -17,19 +17,27 @@ class Session:
         while True:
             for id in range(2):
                 # player id's turn
+                print('start')
                 self.update_state(id,'my_turn')
                 if self.g.state == STATE["fire"]:
                     forward = True
+                print('1111')
                 move = self.psockets[id].recv(BUFFER_SIZE).decode("utf-8") 
                 print("recieved move %s from player %d" % (move, id+1))
                 self.g.update_game(move,id)
                 if forward: # let enemy know where they got hit
+                    print('fstart')
                     self.update_state((id+1)%2, 'under_fire')
+                    print('fstart1')
                     self.psockets[(id+1)%2].sendall(move.encode("utf-8"))
+                    print('fend')
                 if self.g.state == STATE["gameover"]:
+                    print("gameover")
                     self.update_state(id, 'you_win')
                     self.update_state((id+1)%2,'you_lost')
+                print('before end')
                 self.update_state(id, self.g.players[id].message)
+                print('end')
 
 def start_session(p1sock,p2sock):
     Session(p1sock,p2sock).start_game()
