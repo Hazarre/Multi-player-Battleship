@@ -11,13 +11,13 @@ class Session:
         self.psockets = [p1sock,p2sock]
         self.g=Game()
     def update_state(self, id, state):
-        self.psockets[id].sendall(MESSAGE_ENCODING[state])
+        self.psockets[id].sendall(MESSAGE_ENCODING[state].encode("utf-8"))
     def start_game(self):
         while True:
             for id in range(2):
                 # player id's turn
                 self.update_state(id,'my_turn')
-                move = self.psockets[id].recv(BUFFER_SIZE)
+                move = self.psockets[id].recv(BUFFER_SIZE).decode("utf-8") 
                 print("recieved move %s from player %d" % (move, id+1))
                 self.g.update_game(move,id)
                 if self.g.state == STATE["gameover"]:

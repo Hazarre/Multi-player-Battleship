@@ -15,7 +15,7 @@ s = socket_to_server()
 print("connected to server")
 
 while PLAY_GAME:
-    mess = s.recv(BUFFER_SIZE)
+    mess = s.recv(BUFFER_SIZE).decode("utf-8") 
     if mess == MESSAGE_ENCODING['you_loss']:
         print("You Lost")
     elif mess == MESSAGE_ENCODING['you_win']:
@@ -23,7 +23,7 @@ while PLAY_GAME:
     elif mess == MESSAGE_ENCODING['my_turn']:
         move = g.get_input_prompt()
         g.update_game(move,id)
-        s.sendall(move)
+        s.sendall(move.encode("utf-8"))
         mess = MESSAGE_ENCODING['waiting']
         
 
