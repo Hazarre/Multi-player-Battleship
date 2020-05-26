@@ -18,7 +18,8 @@ class Session:
             for id in range(2):
                 # player id's turn
                 self.update_state(id,'my_turn')
-                forward = self.g.state == STATE["fire"]:
+                if self.g.state == STATE["fire"]:
+                    forward = True
                 move = self.psockets[id].recv(BUFFER_SIZE).decode("utf-8") 
                 print("recieved move %s from player %d" % (move, id+1))
                 self.g.update_game(move,id)

@@ -13,6 +13,7 @@ g = Game()
 g.set_identity("client")
 id = 0 
 e_id = 1 # enemy's id
+print(g.players[0].enemy_board[0][0],g.players[1].enemy_board[0][0])
 s = socket_to_server()
 print("connected to server")
 
@@ -22,24 +23,29 @@ while PLAY_GAME:
     # add case "waiting"
     mess = s.recv(BUFFER_SIZE).decode("utf-8") 
     if mess == MESSAGE_ENCODING['target_miss']:
-        move = parse_input(move)
-        g.players[id].enemy_board[int(move[0])][int(move[1])] = STATUS['miss']
+        move = g.parse_input(move)
+        print("final",move,type(move))
+        g.players[id].enemy_board[move['x']][move['y']] = STATUS['miss']
+        g.visualize()
     elif mess == MESSAGE_ENCODING['target_hit']:
-        move = parse_input(move)
-        g.players[id].enemy_board[int(move[0])][int(move[1])] = STATUS['hit']
+        move = g.parse_input(move)
+        print("final",move,type(move))
+        g.players[id].enemy_board[move['x']][move['y']] = STATUS['hit']
+        g.visualize()
     elif mess == MESSAGE_ENCODING['under_fire']:
         mess = s.recv(BUFFER_SIZE).decode("utf-8")
         g.update_game(move,e_id)
     elif mess == MESSAGE_ENCODING['you_win']:
         print("You won")
-    elif mess == MESSAGE_ENCODING['you_win']:
-
+    elif mess == MESSAGE_ENCODING['you_loss']:
+        print("YOu loss")
     elif mess == MESSAGE_ENCODING['my_turn']:
         move = g.get_input_prompt()
+
         g.update_game(move,id)
+        print(move,type(move))
         s.sendall(move.encode("utf-8"))
         mess = MESSAGE_ENCODING['waiting']
         
 
-        
     

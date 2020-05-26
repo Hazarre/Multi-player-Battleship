@@ -147,7 +147,7 @@ class Game:
             else:
                 p.message = 'target_miss'
         if True:  #self.identity is not "server"
-            print("player %d" % id)
+            print("player %d" % id+1)
             p.visualize()
         return 
 
