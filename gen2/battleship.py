@@ -104,7 +104,7 @@ class Game:
         move = {}
         move['x'] = int(str_in[0])
         move['y'] = int(str_in[1])
-        if len(str_in) >= 3:
+        if len(str_in) >= 3 and self.state == STATE["setup"]:
             move['o'] = ORIENTATION[str_in[2]]
         return move
     
