@@ -12,7 +12,7 @@ def game_start(p1sock, p2sock):
     for i in range(NUM_SHIPS):
         p1sock.send("Please place your number %d ship: " % i)
         move = p1sock.recv(BUFFER_SIZE)
-        print("recieved move %s from player 1" % move)
+        print("received move %s from player 1" % move)
     p1sock.send("Wait for player 2 to place their ship.")
     
     for i in range(NUM_SHIPS):
@@ -40,14 +40,14 @@ def run_game(p1sock, p2sock):
     while True:
         send_messages_to_player1()
         p1_move = p1sock.recv(BUFFER_SIZE)
-        print("recieved move %s from player 1" % p1_move)
+        print("received move %s from player 1" % p1_move)
         p1_move = parse_move(p1_move)
         g.p1Input(p1_move)
         send_messages_to_player1()
 
         send_messages_to_player2()
         p2_move = p2sock.recv(BUFFER_SIZE)
-        print("recieved move %s from player 1" % p2_move)
+        print("received move %s from player 1" % p2_move)
         p2_move = parse_move(p2_move)
         g.p2Input(p2_move)
         send_messages_to_player2()

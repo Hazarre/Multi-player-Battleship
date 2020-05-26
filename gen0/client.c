@@ -41,8 +41,8 @@ int main(int argc, char const *argv[]) {
 
   while(valread = read(clientfd , buffer, BUF_SIZE)){
 	  // Move data is stored in buffer
-	  // Recieve opponents move from server
-	  printf("Recieved from server: %s\n", buffer); 
+	  // Receive opponents move from server
+	  printf("Received from server: %s\n", buffer); 
 	//   player=buffer[0];
 	//   type = buffer[1];
 	//   x    = buffer[2];
