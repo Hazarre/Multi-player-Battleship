@@ -22,7 +22,7 @@ class Session:
                 self.update_state(id,'my_turn')
                 if self.g.state == STATE["fire"]:
                     forward = True
-                print('getting player%d's move' %(id+1))
+                print('getting player%ds move' %(id+1))
                 move = self.psockets[id].recv(BUFFER_SIZE).decode("utf-8") 
                 print("recieved move %s from player %d" % (move, id+1))
                 self.g.update_game(move,id)
@@ -48,6 +48,7 @@ def start_session(p1sock,p2sock):
 # multiprocess server
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+s.setblocking(True)
 s.bind((socket.gethostname(), PORT))
 s.listen(50)
 print("waiting")
