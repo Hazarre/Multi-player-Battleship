@@ -18,7 +18,7 @@ for i in range(len(MESSAGE_DECODING)):
     MESSAGE_ENCODING[MESSAGE_DECODING[i]] = str(i) 
 
 ORIENTATION = {'V': 1, 'H': 0, 'v': 1, 'h':0}
-BOARD_SIZE, NUM_SHIPS, SHIP_SIZE  = 10 , 3, 3
+BOARD_SIZE, NUM_SHIPS, SHIP_SIZE  = 10 , 2, 1
 
 class Player:
     def __init__(self):

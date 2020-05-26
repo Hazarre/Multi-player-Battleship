@@ -17,11 +17,12 @@ class Session:
         while True:
             for id in range(2):
                 # player id's turn
-                print('start')
+                print('start %d' %id)
+                print('state %d' %self.g.state)
                 self.update_state(id,'my_turn')
                 if self.g.state == STATE["fire"]:
                     forward = True
-                print('1111')
+                print('getting player%d's move' %(id+1))
                 move = self.psockets[id].recv(BUFFER_SIZE).decode("utf-8") 
                 print("recieved move %s from player %d" % (move, id+1))
                 self.g.update_game(move,id)
@@ -35,6 +36,7 @@ class Session:
                     print("gameover")
                     self.update_state(id, 'you_win')
                     self.update_state((id+1)%2,'you_lost')
+                    break
                 print('before end')
                 self.update_state(id, self.g.players[id].message)
                 print('end')
