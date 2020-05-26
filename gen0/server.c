@@ -78,9 +78,9 @@ int main(int argc, char const *argv[]){
 
     char* start_message = "Player please start placing battleship!\n";
     send(clientfd , start_message, strlen(start_message) , 0 );
-    //read the message recieved 
+    //read the message received 
     while (valread = read(clientfd, buffer, BUF_SIZE)){
-        printf("Recieved from client: %s\n",buffer);
+        printf("Received from client: %s\n",buffer);
         for(int j=0;j<BUF_SIZE;j++) buffer[j] = 0;
 
         //send to client
