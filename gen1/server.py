@@ -34,13 +34,11 @@ def game_start(p1sock, p2sock):
         #updategame(move, player2)
 
 
-# Use this one
+# Use this one 
 def run_game(p1sock, p2sock):
     g = battleship.Game
-
     while True:
         send_messages(g)
-
         p1_move = p1sock.recv(BUFFER_SIZE)
         if p1_move is not None: # TODO change "is not none" to != w/e the default return for recv is
             print("recieved move %s from player 1" % p1_move)
@@ -67,8 +65,12 @@ def send_messages(game):
 
 
 def parse_move(move):
-    # TODO turn move string into the right format
-    return move
+    newMove = []
+    move = move.split()
+    newMove.append([int(move[0]), int(move[1])])
+    if len(move)==3:
+        newMove.append(battleship.ORIENTATION(move[2]))
+    return newMove
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind((socket.gethostname(), PORT))
