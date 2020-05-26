@@ -9,7 +9,7 @@ and sending out moves on players turn.
 Author: Ansel Tessier (at9088@bard.edu)
 """
 
-
+import threading
 import numpy
 import socket
 import curses
@@ -18,10 +18,12 @@ import sys,os
 #seting up sockets
 HOST = '127.0.0.1' ## NOTE: this is using localhost for dev, must change
 PORT = 65432
-setup = True
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((HOST, PORT))
 s.setblocking(0)
+
+#setting up threading
+c = threading.Condition()
 
 #seting up curses wrapper
 stdscr = curses.initscr()
@@ -29,10 +31,25 @@ curses.noecho()
 curses.cbreak()
 stdscr.keypad(True)
 
-#manually setting up boards for testing
+#global vars shared between threads
 enemyboard = numpy.zeros((10,10), dtype=None, order='c')
 myboard = numpy.zeros((10,10), dtype=None, order='c')
+flag = 0 #threading flag
+gameflag = 0
 
+
+class listener(threading.Thread):
+    def __init__(self, name):
+        threading.Thread.__init__(self)
+        self.name = name
+
+    def run(self):
+        global enemyboard
+        global myboard
+        global flag
+        global s
+
+        message = s.recv(4096)
 
 
 #sends your move to the server as a byte object
@@ -43,7 +60,6 @@ def make_move(pos):
 # TODO: s.recv dosen't play well with sockets
 def recive_update():
     myboard = s.recv(4096)
-    #if(update = "setup")
 
     # TODO: look for message that switches game state
     #may need to convert update from bytes to numpyarray
