@@ -10,19 +10,21 @@ FLAGS = {'bad input': 0,
 ORIENTATION = {'V': True, 'H': False}
 
 
+class Player:
+	Board = []
+	message 
+	def __init__(self):
+
+
 class Game:
 	BOARD_SIZE = 10
 	NUM_SHIPS = 3
-	#p1Board = [[0] * BOARD_SIZE for _ in range(BOARD_SIZE)]
-	p1Board =[]
-	p2Board=[]
-	#p2Board = [[0] * BOARD_SIZE for _ in range(BOARD_SIZE)]
+	p1,p2 = 0,1 
+	p1Board, p2Board = []
+	p1Ships, p2Ships = NUM_SHIPS
+	p1Out, p2Out = []
 	turn = 1
 	state = 'setup'
-	p1Ships = NUM_SHIPS
-	p2Ships = NUM_SHIPS
-	p1Out = []
-	p2Out = []
 
 	def __init__(self):
 		self.reset()

@@ -2,7 +2,7 @@ import socket
 from battleship import* 
 PORT = 8080
 BUFFER_SIZE = 1024
-PLAY_GAME = True
+
 
 def socket_to_server():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -21,7 +21,7 @@ s = socket_to_server()
 print("connected to server")
 
 mess = MESSAGE_ENCODING["waiting"]
-while PLAY_GAME:
+while True:
     # add input error/placement success in both client and server.py, include with case my_turn
     # add case "waiting"
     print("prev STATE %s %s" % (mess, MESSAGE_DECODING[int(mess)]))
@@ -29,7 +29,7 @@ while PLAY_GAME:
     mess = s.recv(BUFFER_SIZE).decode("utf-8")
     print("CURRENT STATE %s %s" % (mess, MESSAGE_DECODING[int(mess)]))
     if mess == MESSAGE_ENCODING['under_fire']:
-        move = s.recv(BUFFER_SIZE).decode("utf-8")
+        move = s.recv(3).decode("utf-8")
         print("recieved move %s under fire" %move)
         g.update_game(move,e_id)
         g.p1.visualize()
@@ -44,7 +44,7 @@ while PLAY_GAME:
         move = g.get_input_prompt()
         s.sendall(move.encode("utf-8"))
         if g.state == STATE['fire']:
-            mess = s.recv(BUFFER_SIZE).decode("utf-8") # hear from the server the result of the missle
+            mess = s.recv(1).decode("utf-8") # hear from the server the result of the missle
             if mess == MESSAGE_ENCODING['target_hit']:
                 print("recieved result mess %s under fire" % MESSAGE_DECODING[int(mess)])
                 m = g.parse_input(move)
