@@ -41,8 +41,8 @@ class Game:
 		if self.inputCheck(input):
 			if self.state == 'setup':
 				if self.p1Ships > 0:
-					startCoord = input[0]
-					orientation = input[1]
+					startCoord = (input[0],input[1])
+					orientation = input[2]
 					if self.validShip(input, 1):
 						# place a ship
 						if orientation == ORIENTATION['V']:
@@ -77,8 +77,8 @@ class Game:
 		if self.inputCheck(input):
 			if self.state == 'setup':
 				if self.p2Ships > 0:
-					startCoord = input[0]
-					orientation = input[1]
+					startCoord = (input[0],input[1])
+					orientation = input[2]
 					if self.validShip(input, 2):
 						# place a ship
 						if orientation == ORIENTATION['V']:
@@ -124,8 +124,8 @@ class Game:
 			board = self.p1Board
 		else:
 			board = self.p2Board
-		startCoord = input[0]
-		orientation = input[1]
+		startCoord = (input[0],input[1])
+		orientation = input[2]
 
 		if orientation == ORIENTATION['V']:
 			if startCoord[1] > self.BOARD_SIZE - 3: return False
