@@ -2,7 +2,7 @@
 client = True
 
 STATUS = {  'water': 0,
-            'ship': 1,
+    'ship': 1,
             'miss':2,
             'hit':3}
 
@@ -12,10 +12,11 @@ STATE ={'setup':0,      # possible game states
          }
 
 
-MESSAGE_DECODING = ['my_turn','waiting','input_error','placement_success','target_hit','target_miss','you_loss','you_win']
+MESSAGE = ['my_turn','waiting','input_error','placement_success','target_hit','target_miss','you_loss','you_win']
 MESSAGE_ENCODING = {}
-for i in range(len(MESSAGE_DECODING)):
-    MESSAGE_ENCODING[MESSAGE_DECODING[i]] = i 
+for i in range(len(MESSAGE)):
+    MESSAGE_DECODING[str(i)] = MESSAGE[i]
+    MESSAGE_ENCODING[MESSAGE[i]] = str(i) 
 
 ORIENTATION = {'V': 1, 'H': 0, 'v': 1, 'h':0}
 BOARD_SIZE, NUM_SHIPS, SHIP_SIZE  = 10 , 3, 3

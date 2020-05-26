@@ -12,7 +12,7 @@ class Session:
         self.g=Game()
     def update_state(self, id, state):
         self.psockets[id].sendall(MESSAGE_ENCODING[state])
-    def start_game():
+    def start_game(self):
         while True:
             for id in range(2):
                 # player id's turn

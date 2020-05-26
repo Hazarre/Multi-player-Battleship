@@ -7,69 +7,44 @@ PORT2 = 8081
 NUM_SHIPS = 3
 BUFFER_SIZE = 1024
 
-# This one unnecessarily  includes unnecessary game logic
-def game_start(p1sock, p2sock):
-    for i in range(NUM_SHIPS):
-        p1sock.send("Please place your number %d ship: " % i)
-        move = p1sock.recv(BUFFER_SIZE)
-        print("recieved move %s from player 1" % move)
-    p1sock.send("Wait for player 2 to place their ship.")
-    
-    for i in range(NUM_SHIPS):
-        p2sock.send("Please place younumber %d ship: " % i)
-        move = p2sock.recv(BUFFER_SIZE)
-        print("player2 move %s" % move)
-    GAME = True
-    FIRSTROUND = True
-    while GAME:
-        if FIRSTROUND:
-            p1sock.send("Please fire your missle (x,y) ")
-            FIRSTROUND = False
-        else: 
-            p1sock.sendall("Your enemy fired a missle at %s, it's your turn to fire back. Enter the coordinate (x,y)" % move)
-        move = p1sock.recv(BUFFER_SIZE)
-        #updategame(move, player1)
-        p2sock.sendall("Your enemy fired a missle at %s, it's your turn to fire back. Enter the coordinate (x,y)" % move)
-        move = p2sock.recv(BUFFER_SIZE)
-        #updategame(move, player2)
-
-
 # Use this one 
 def run_game(p1sock, p2sock):
     g = battleship.Game()
     while True:
-        send_messages_to_player1()
+        send_messages_to_player1(g,p1sock)
         p1_move = p1sock.recv(BUFFER_SIZE)
         print("recieved move %s from player 1" % p1_move)
         p1_move = parse_move(p1_move)
         g.p1Input(p1_move)
-        send_messages_to_player1()
+        print("move processed")
+        send_messages_to_player1(g,p1sock)
 
-        send_messages_to_player2()
+        print("sending message to player 2")
+        send_messages_to_player1(g,p2sock)
         p2_move = p2sock.recv(BUFFER_SIZE)
-        print("recieved move %s from player 1" % p2_move)
+        print("recieved move %s from player 2" % p2_move)
         p2_move = parse_move(p2_move)
         g.p2Input(p2_move)
-        send_messages_to_player2()
+        send_messages_to_player2(g,p2sock)
 
 
-def send_messages_to_player1():
-    global g, p1sock
-    o1 = g.broadcastP1()
-    for msg in o1:
-        p1sock.sendall(msg)
+def send_messages_to_player1(g,p1sock):
+    msg = g.broadcastP1()
+    if len(msg)==0:
+        msg="no message"
+    p1sock.sendall(msg)
 
-def send_messages_to_player2():
-    global g, p2sock
-    o2 = g.broadcastP2()
-    for msg in o2:
-        p2sock.sendall(msg)
+def send_messages_to_player2(g,p2sock):
+    msg = g.broadcastP2()
+    if len(msg)==0:
+        msg="no message"
+    p2sock.sendall(msg)
 
 
 def parse_move(move):
     newMove = []
     move = move.split()
-    newMove.append([int(move[0]), int(move[1])])
+    newMove.append((int(move[0]), int(move[1])))
     if len(move)==3:
         newMove.append(battleship.ORIENTATION[move[2]])
     return newMove

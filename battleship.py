@@ -34,7 +34,8 @@ class Game:
 		self.state = 'setup'
 		self.p1Ships = self.NUM_SHIPS
 		self.p2Ships = self.NUM_SHIPS
-		self.p2Out = []
+		self.p2Out = ["Game Start. Please place your ship. You have 3 ships to place."]
+		self.p1Out = ["Game Start. Please place your ship. You have 3 ships to place."]
 
 	def p1Input(self, input):
 		if self.inputCheck(input):

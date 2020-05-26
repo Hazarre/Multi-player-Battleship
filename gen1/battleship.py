@@ -34,7 +34,8 @@ class Game:
 		self.state = 'setup'
 		self.p1Ships = self.NUM_SHIPS
 		self.p2Ships = self.NUM_SHIPS
-		self.p2Out = []
+		self.p2Out = ["Game Start. Please place your ship. You have 3 ships to place."]
+		self.p1Out = ["Game Start. Please place your ship. You have 3 ships to place."]
 
 	def p1Input(self, input):
 		if self.inputCheck(input):
@@ -189,14 +190,18 @@ class Game:
 
 	# check if there is a message for P1
 	def broadcastP1(self):
-		m = self.p1Out
+		m = ""
+		for i in self.p1Out:
+			m += str(i)
 		self.p1Out = []
 		return m
 
 	# check if there is a message for P2
 	def broadcastP2(self):
-		m = self.p2Out
-		self.p2Out = []
+		m = ""
+		for i in self.p2Out:
+			m += str(i)
+		self.p1Out = []
 		return m
 
 	def numFloating(self, board):
