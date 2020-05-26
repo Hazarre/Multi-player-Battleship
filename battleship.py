@@ -111,13 +111,11 @@ class Game:
 	# this method checks if the input is of valid format for the game state
 	def inputCheck(self, input):
 		if self.state == 'setup':
-			return isinstance(input, list) and len(input) == 2 and isinstance(input[1], str) and \
-				   (isinstance(input[0], list) or isinstance(input[0], tuple)) and len(input[0]) == 2 and \
-				   isinstance(input[0][0], int) and isinstance(input[0][1], int)
+			return isinstance(input, list) and len(input) == 3 and isinstance(input[0], int) and \
+				   isinstance(input[1], int) and isinstance(input[2], bool)
 		elif self.state == 'play':
-			return (isinstance(input, list) or isinstance(input, tuple)) and len(input) == 2 and isinstance(input[0],
-																											int) and isinstance(
-				input[1], int)
+			return isinstance(input, list) and len(input) == 2 and isinstance(input[0],
+																			  int) and isinstance(input[1], int)
 		return False
 
 	# check if the placement is valid on the board
