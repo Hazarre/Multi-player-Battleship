@@ -8,7 +8,7 @@ def socket_to_server():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     s.setblocking(True)
-    s.connect(('54.81.106.48', PORT))
+    s.connect(('3.95.242.45', PORT))
     return s
 
 g = Game()
@@ -20,7 +20,7 @@ e_id = 1 # enemy's id
 s = socket_to_server()
 print("connected to server")
 
-mess = 0 
+mess = MESSAGE_ENCODING["waiting"]
 while PLAY_GAME:
     # add input error/placement success in both client and server.py, include with case my_turn
     # add case "waiting"
