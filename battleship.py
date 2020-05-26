@@ -13,10 +13,8 @@ ORIENTATION = {'V': True, 'H': False}
 class Game:
 	BOARD_SIZE = 10
 	NUM_SHIPS = 3
-	#p1Board = [[0] * BOARD_SIZE for _ in range(BOARD_SIZE)]
 	p1Board =[]
 	p2Board=[]
-	#p2Board = [[0] * BOARD_SIZE for _ in range(BOARD_SIZE)]
 	turn = 1
 	state = 'setup'
 	p1Ships = NUM_SHIPS
@@ -34,8 +32,8 @@ class Game:
 		self.state = 'setup'
 		self.p1Ships = self.NUM_SHIPS
 		self.p2Ships = self.NUM_SHIPS
-		self.p2Out = ["Game Start. Please place your ship. You have 3 ships to place."]
-		self.p1Out = ["Game Start. Please place your ship. You have 3 ships to place."]
+		self.p2Out.append("Game Start. Please place your ship. You have "+str(self.p2Ships)+" ships to place.")
+		self.p1Out.append("Game Start. Please place your ship. You have "+str(self.p1Ships)+" ships to place.")
 
 	def p1Input(self, input):
 		if self.inputCheck(input):
