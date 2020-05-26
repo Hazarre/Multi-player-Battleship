@@ -111,7 +111,7 @@ class Game:
     # this method checks if the input is of valid format for the game state
     def move_check(self, move):
         x_max, y_max = BOARD_SIZE, BOARD_SIZE
-        if self.state == STATE["setup"]:
+        if self.state == STATE["setup"] and len(move)>=3:
             if move['o'] == ORIENTATION['V']:
                 y_max -= SHIP_SIZE
             else:
