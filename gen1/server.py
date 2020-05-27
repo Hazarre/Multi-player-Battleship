@@ -70,7 +70,7 @@ def send_messages_to_player2(g,p2sock):
     if len(mess)==0:
         print("no message")
         p2sock.sendall("1 -1".encode("UTF-8"))
-    for lm in g.broadcastP2():
+    for lm in mess:
         sm = local_to_socket_msg(lm)
         p2sock.sendall(sm.encode("UTF-8"))
     
