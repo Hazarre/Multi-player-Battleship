@@ -112,7 +112,7 @@ class Game:
 	def inputCheck(self, input):
 		if self.state == 'setup':
 			return isinstance(input, list) and len(input) == 3 and isinstance(input[0], int) and \
-				   isinstance(input[1], int) and isinstance(input[2], bool)
+				   isinstance(input[1], int) and isinstance(input[2], int)
 		elif self.state == 'play':
 			return isinstance(input, list) and len(input) == 2 and isinstance(input[0],
 																			  int) and isinstance(input[1], int)
