@@ -35,7 +35,7 @@ print(socket_to_local_msg("1 1 5"))
 print(socket_to_local_msg("2 1 1 1"))
 print("end of packets")
 
-print("Demo of game")
+
 game = battleship.Game()
 game.NUM_SHIPS = 1
 game.reset()
@@ -46,7 +46,9 @@ for i in game.p1Out:
     print(local_to_socket_msg(i))
 for i in game.p2Out:
     print(local_to_socket_msg(i))
-    
+
+
+print("Demo of game")
 print('P1:',parse_out(game.broadcastP1()))
 print('P2:',parse_out(game.broadcastP2()))
 input("")
