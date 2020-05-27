@@ -60,7 +60,7 @@ def run_game(p1sock, p2sock):
         l_move2 = socket_to_local_msg(p2_move)
         print("move local data type", type(l_move2))
         print(l_move2)
-        g.p1Input(l_move2)
+        g.p2Input(l_move2)
         send_messages_to_player2(g,p1sock)
         print('P1:',parse_out(g.broadcastP1()))
         print('P2:',parse_out(g.broadcastP2()))
