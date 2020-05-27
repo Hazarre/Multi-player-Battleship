@@ -66,6 +66,8 @@ def send_messages_to_player2(g,p2sock):
 
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+s.setblocking(True)
 s.bind((socket.gethostname(), PORT))
 s.listen(50)
 print("waiting for client")
