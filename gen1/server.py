@@ -6,6 +6,9 @@ PORT = 8080
 NUM_SHIPS = 3
 BUFFER_SIZE = 6
 
+
+flags = battleship.FLAGS
+flags = {v: k for k, v in flags.items()}
 def parse_out(m):
 	for i in range(len(m)):
 		msg = m[i]
