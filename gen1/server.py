@@ -10,17 +10,17 @@ BUFFER_SIZE = 6
 flags = battleship.FLAGS
 flags = {v: k for k, v in flags.items()}
 def parse_out(m):
-	for i in range(len(m)):
-		msg = m[i]
-		if len(msg) == 2:
-			msg[0] = flags[msg[0]]
-		elif len(msg) == 3:
-			if msg[0]:
-				msg = 'you were hit at '+str((msg[1],msg[2]))
-			else:
-				msg = 'op missed at '+str((msg[1],msg[2]))
-		m[i] = msg
-	return m
+    for i in range(len(m)):
+        msg = m[i]
+        if len(msg) == 2:
+            msg[0] = flags[msg[0]]
+        elif len(msg) == 3:
+            if msg[0]:
+                msg = 'you were hit at '+str((msg[1],msg[2]))
+            else:
+                msg = 'op missed at '+str((msg[1],msg[2]))
+        m[i] = msg
+    return m
 
 # Use this one 
 def run_game(p1sock, p2sock):
@@ -57,15 +57,23 @@ def socket_to_local_msg(sm):
 	return lm
 
 def send_messages_to_player1(g,p1sock):
-   for lm in g.broadcastP1():
+    mess = g.broadcastP1()
+    if len(mess)==0:
+        print("no message")
+        p1sock.sendall("1 -1".encode("UTF-8"))
+    for lm in mess:
         sm = local_to_socket_msg(lm)
         p1sock.sendall(sm.encode("UTF-8"))
 
 def send_messages_to_player2(g,p2sock):
+    mess = g.broadcastP2()
+    if len(mess)==0:
+        print("no message")
+        p2sock.sendall("1 -1".encode("UTF-8"))
     for lm in g.broadcastP2():
         sm = local_to_socket_msg(lm)
         p2sock.sendall(sm.encode("UTF-8"))
-    p2sock.sendall(sm.encode("UTF-8"))
+    
 
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
