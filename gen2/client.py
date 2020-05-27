@@ -3,7 +3,6 @@ from battleship import*
 PORT = 8080
 BUFFER_SIZE = 1024
 
-
 def socket_to_server():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -13,7 +12,6 @@ def socket_to_server():
 
 g = Game()
 g.set_identity("client")
-
 
 id = 0 
 e_id = 1 # enemy's id
@@ -26,7 +24,7 @@ while True:
     # add case "waiting"
     print("prev STATE %s %s" % (mess, MESSAGE_DECODING[int(mess)]))
     print("waiting for server")
-    mess = s.recv(BUFFER_SIZE).decode("utf-8")
+    mess = s.recv(1).decode("utf-8")
     print("CURRENT STATE %s %s" % (mess, MESSAGE_DECODING[int(mess)]))
     if mess == MESSAGE_ENCODING['under_fire']:
         move = s.recv(3).decode("utf-8")
@@ -46,6 +44,7 @@ while True:
         if g.state == STATE['fire']:
             mess = s.recv(1).decode("utf-8") # hear from the server the result of the missle
             if mess == MESSAGE_ENCODING['target_hit']:
+                print("hit target")
                 print("recieved result mess %s under fire" % MESSAGE_DECODING[int(mess)])
                 m = g.parse_input(move)
                 g.players[id].enemy_board[m['x']][m['y']] = STATUS['ship']
