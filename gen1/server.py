@@ -2,6 +2,7 @@ from multiprocessing import Process
 import socket
 from time import sleep
 import battleship
+import pdb
 PORT = 8080
 NUM_SHIPS = 3
 BUFFER_SIZE = 6
@@ -28,17 +29,26 @@ def run_game(p1sock, p2sock):
     g.NUM_SHIPS = 1
     g.reset()
     while True:
-        
+        print("before send p1 out")
+        print(p1Out)
         send_messages_to_player1(g,p1sock)
+        print("after send p1 out")
+        print(p1Out)
         print("waiting for player1\n")
         p1_move = p1sock.recv(BUFFER_SIZE).decode("UTF-8")
         print("recieved move %s from player 1\n" % p1_move)
         print("move socket data type", type(p1_move))
         l_move1 = socket_to_local_msg(p1_move)
         print("move local data type", type(l_move1))
+        print(type(l_move1[0]))
         print(l_move1)
         g.p1Input(l_move1)
+        #pdb.set_trace()
+        print("before send p1 out")
+        print(p1Out)
         send_messages_to_player1(g,p1sock)
+        print("after send p1 out")
+        print(p1Out)
         print('P1:',parse_out(g.broadcastP1()))
         print('P2:',parse_out(g.broadcastP2()))
 

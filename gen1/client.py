@@ -25,7 +25,6 @@ def parse_out(m):
 while PLAY_GAME:
     print("recving")
     mes = s.recv(BUFFER_SIZE).decode("UTF-8")
-    parse_out(m)
     move = input(mes)
     s.sendall(move.encode("UTF-8"))
     print("sent mes")
