@@ -28,18 +28,29 @@ def run_game(p1sock, p2sock):
     g.NUM_SHIPS = 1
     g.reset()
     while True:
+        
         send_messages_to_player1(g,p1sock)
+        print("waiting for player1\n")
         p1_move = p1sock.recv(BUFFER_SIZE).decode("UTF-8")
-        print("recieved move %s from player 1" % p1_move)
-        g.p1Input(socket_to_local_msg(p1_move))
+        print("recieved move %s from player 1\n" % p1_move)
+        print("move socket data type", type(p1_move))
+        l_move1 = socket_to_local_msg(p1_move)
+        print("move local data type", type(l_move1))
+        print(l_move1)
+        g.p1Input(l_move1)
         send_messages_to_player1(g,p1sock)
         print('P1:',parse_out(g.broadcastP1()))
         print('P2:',parse_out(g.broadcastP2()))
 
         send_messages_to_player2(g,p2sock)
+        print("waiting for player2\n")
         p2_move = p2sock.recv(BUFFER_SIZE).decode("UTF-8")
-        print("recieved move %s from player 2" % p2_move)
-        g.p1Input(socket_to_local_msg(p1_move))
+        print("recieved move %s from player 2\n" % p2_move)
+        print("move socket data type", type(p2_move))
+        l_move2 = socket_to_local_msg(p2_move)
+        print("move local data type", type(l_move2))
+        print(l_move2)
+        g.p1Input(l_move2)
         send_messages_to_player2(g,p1sock)
         print('P1:',parse_out(g.broadcastP1()))
         print('P2:',parse_out(g.broadcastP2()))
@@ -57,7 +68,7 @@ def socket_to_local_msg(sm):
 	return lm
 
 def send_messages_to_player1(g,p1sock):
-    mess = g.broadcastP1()
+    mess = g.p1Out
     if len(mess)==0:
         print("no message")
         p1sock.sendall("1 -1".encode("UTF-8"))
@@ -66,7 +77,7 @@ def send_messages_to_player1(g,p1sock):
         p1sock.sendall(sm.encode("UTF-8"))
 
 def send_messages_to_player2(g,p2sock):
-    mess = g.broadcastP2()
+    mess = g.p2Out
     if len(mess)==0:
         print("no message")
         p2sock.sendall("1 -1".encode("UTF-8"))
