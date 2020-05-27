@@ -37,6 +37,16 @@ myboard = numpy.zeros((10,10), dtype=None, order='c')
 threadflag = 0 #threading flag
 gameflag = 0
 game_play = True
+last_shot = (-1,-1) #cords and bool hit (0=false)
+
+flagdict = {
+    1 : "Wait your turn"
+    2 : "Waiting for other player to place ships"
+    3 : "Other player ready"
+    4 : "placed a ship" #see communications.txt
+    5 : "Repeated fire"
+    6 : "GAME OVER"#see communications.txt
+}
 
 
 """listener class makes a thread that listens for messages from the server and updates
@@ -50,7 +60,9 @@ class listener(threading.Thread):
     def run(self):
         global enemyboard
         global myboard
+        global gameflag
         global threadflag
+        global last_shot
         global s
 
         while game_play:
@@ -59,9 +71,17 @@ class listener(threading.Thread):
                 message = s.recv(4096)
                 ## TODO: parse message and ubate relivent vars.
                 #if bool, this is an incoming fire message
-                if(type(message[0]) == bool):
-
-                elif
+                message = [int(i) for i in message.split(' ')]
+                if(message[0] == 0):
+                    gameflag = flagdict.get(message[1])
+                elif(message[0] == 1):
+                    if(message[1] = 0):
+                        enemyboard[last_shot[2]][last_shot[1]] = 0
+                    else:
+                        enemyboard[last_shot[2]][last_shot[1]] = 2
+                elif(message[0] == 2):
+                    if(myboard[message[1]][message[2]] == 1):
+                        myboard[message[1]][message[2]] == 2
 
                 threadflag = 1
                 c.notify_all()
@@ -123,6 +143,7 @@ def draw_board(stdscr):
 
         if k == ord(' '):
             make_move((cursor_x//4, cursor_y//2))
+            last_shot = (cursor_x//4, cursor_y//2)
 
         #status bar
         statusbarstr = "Press 'q' to exit | Target with arrow keys, fire with space | Target: {}, {}".format(cursor_x//4, cursor_y//2)
