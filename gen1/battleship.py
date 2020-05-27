@@ -1,30 +1,29 @@
 FLAGS = {'bad input': 0,
 		 'wait your turn': 1,
-		 'waiting for other player to place ships': 2,
+         'your turn':2,
 		 'not a valid ship placement': 3,
 		 'other player ready': 4,
 		 'placed a ship': 5,
 		 'repeated fire': 6,
 		 'game over': 7,
-		 'fire result': 8}
-ORIENTATION = {'V': True, 'H': False}
-
-
-class Player:
-	Board = []
-	message 
-	def __init__(self):
+		 'fire result': 8,
+         'place ship':9,
+         }
+         
+ORIENTATION = {'V':1, 'H': 0}
 
 
 class Game:
 	BOARD_SIZE = 10
 	NUM_SHIPS = 3
-	p1,p2 = 0,1 
-	p1Board, p2Board = []
-	p1Ships, p2Ships = NUM_SHIPS
-	p1Out, p2Out = []
+	p1Board =[]
+	p2Board=[]
 	turn = 1
 	state = 'setup'
+	p1Ships = NUM_SHIPS
+	p2Ships = NUM_SHIPS
+	p1Out = []
+	p2Out = []
 
 	def __init__(self):
 		self.reset()
@@ -36,15 +35,15 @@ class Game:
 		self.state = 'setup'
 		self.p1Ships = self.NUM_SHIPS
 		self.p2Ships = self.NUM_SHIPS
-		self.p2Out = ["Game Start. Please place your ship. You have 3 ships to place."]
-		self.p1Out = ["Game Start. Please place your ship. You have 3 ships to place."]
+		self.p2Out.append([1,-1])
+		self.p1Out.append([1,-1])
 
 	def p1Input(self, input):
 		if self.inputCheck(input):
 			if self.state == 'setup':
 				if self.p1Ships > 0:
-					startCoord = input[0]
-					orientation = input[1]
+					startCoord = (input[0],input[1])
+					orientation = input[2]
 					if self.validShip(input, 1):
 						# place a ship
 						if orientation == ORIENTATION['V']:
@@ -62,7 +61,7 @@ class Game:
 				if self.p1Ships == 0 and self.p2Ships == 0:
 					self.state = 'play'
 				elif self.p1Ships == 0:
-					self.p1Out.append([FLAGS['waiting for other player to place ships'], -1])
+					self.p1Out.append([FLAGS['wait your turn'], -1])
 					self.p2Out.append([FLAGS['other player ready'], -1])
 
 			elif self.state == 'play':
@@ -79,8 +78,8 @@ class Game:
 		if self.inputCheck(input):
 			if self.state == 'setup':
 				if self.p2Ships > 0:
-					startCoord = input[0]
-					orientation = input[1]
+					startCoord = (input[0],input[1])
+					orientation = input[2]
 					if self.validShip(input, 2):
 						# place a ship
 						if orientation == ORIENTATION['V']:
@@ -97,7 +96,7 @@ class Game:
 				if self.p1Ships == 0 and self.p2Ships == 0:
 					self.state = 'play'
 				elif self.p2Ships == 0:
-					self.p2Out.append([FLAGS['waiting for other player to place ships'], -1])
+					self.p2Out.append([FLAGS['wait your turn'], -1])
 					self.p1Out.append([FLAGS['other player ready'], -1])
 
 			elif self.state == 'play':
@@ -113,13 +112,11 @@ class Game:
 	# this method checks if the input is of valid format for the game state
 	def inputCheck(self, input):
 		if self.state == 'setup':
-			return isinstance(input, list) and len(input) == 2 and isinstance(input[1], str) and \
-				   (isinstance(input[0], list) or isinstance(input[0], tuple)) and len(input[0]) == 2 and \
-				   isinstance(input[0][0], int) and isinstance(input[0][1], int)
+			return isinstance(input, list) and len(input) == 3 and isinstance(input[0], int) and \
+				   isinstance(input[1], int) and isinstance(input[2], bool)
 		elif self.state == 'play':
-			return (isinstance(input, list) or isinstance(input, tuple)) and len(input) == 2 and isinstance(input[0],
-																											int) and isinstance(
-				input[1], int)
+			return isinstance(input, list) and len(input) == 2 and isinstance(input[0],
+																			  int) and isinstance(input[1], int)
 		return False
 
 	# check if the placement is valid on the board
@@ -128,8 +125,8 @@ class Game:
 			board = self.p1Board
 		else:
 			board = self.p2Board
-		startCoord = input[0]
-		orientation = input[1]
+		startCoord = (input[0],input[1])
+		orientation = input[2]
 
 		if orientation == ORIENTATION['V']:
 			if startCoord[1] > self.BOARD_SIZE - 3: return False
@@ -192,18 +189,14 @@ class Game:
 
 	# check if there is a message for P1
 	def broadcastP1(self):
-		m = ""
-		for i in self.p1Out:
-			m += str(i)
+		m = self.p1Out
 		self.p1Out = []
 		return m
 
 	# check if there is a message for P2
 	def broadcastP2(self):
-		m = ""
-		for i in self.p2Out:
-			m += str(i)
-		self.p1Out = []
+		m = self.p2Out
+		self.p2Out = []
 		return m
 
 	def numFloating(self, board):
