@@ -34,10 +34,14 @@ stdscr.keypad(True)
 #global vars shared between threads
 enemyboard = numpy.zeros((10,10), dtype=None, order='c')
 myboard = numpy.zeros((10,10), dtype=None, order='c')
-flag = 0 #threading flag
+threadflag = 0 #threading flag
 gameflag = 0
+game_play = True
 
 
+"""listener class makes a thread that listens for messages from the server and updates
+    relivent vars
+"""
 class listener(threading.Thread):
     def __init__(self, name):
         threading.Thread.__init__(self)
@@ -46,10 +50,24 @@ class listener(threading.Thread):
     def run(self):
         global enemyboard
         global myboard
-        global flag
+        global threadflag
         global s
 
-        message = s.recv(4096)
+        while game_play:
+            c.acquire()
+            if threadflag == 0:
+                message = s.recv(4096)
+                ## TODO: parse message and ubate relivent vars.
+                #if bool, this is an incoming fire message
+                if(type(message[0]) == bool):
+
+                elif
+
+                threadflag = 1
+                c.notify_all()
+            else:
+                c.wait()
+            c.release()
 
 
 #sends your move to the server as a byte object
