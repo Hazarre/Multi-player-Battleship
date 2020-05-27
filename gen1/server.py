@@ -4,8 +4,21 @@ from time import sleep
 import battleship
 PORT = 8080
 NUM_SHIPS = 3
-BUFFER_SIZE = 1024
+BUFFER_SIZE = 6
 
+def parse_out(m):
+	for i in range(len(m)):
+		msg = m[i]
+		if len(msg) == 2:
+			msg[0] = flags[msg[0]]
+		elif len(msg) == 3:
+			if msg[0]:
+				msg = 'you were hit at '+str((msg[1],msg[2]))
+			else:
+				msg = 'op missed at '+str((msg[1],msg[2]))
+		m[i] = msg
+	return m
+    
 # Use this one 
 def run_game(p1sock, p2sock):
     g = battleship.Game()
@@ -60,7 +73,7 @@ while True:
         print("connected to player 1")
         p2sock, p2addr = s.accept()
         print("connected to player 2")
-        p = Process(target=game_start, args=(p1sock, p2sock))
+        p = Process(target=run_game, args=(p1sock, p2sock))
         p.start()
     except socket.error:
         print('got a socket error')

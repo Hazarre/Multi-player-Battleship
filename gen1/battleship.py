@@ -9,7 +9,6 @@ FLAGS = {'bad input': 0,
 		 'fire result': 8,
          'place ship':9,
          }
-         
 ORIENTATION = {'V':1, 'H': 0}
 
 
