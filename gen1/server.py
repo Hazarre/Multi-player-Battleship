@@ -18,26 +18,28 @@ def parse_out(m):
 				msg = 'op missed at '+str((msg[1],msg[2]))
 		m[i] = msg
 	return m
-    
+
 # Use this one 
 def run_game(p1sock, p2sock):
     g = battleship.Game()
+    g.NUM_SHIPS = 1
+    g.reset()
     while True:
         send_messages_to_player1(g,p1sock)
         p1_move = p1sock.recv(BUFFER_SIZE).decode("UTF-8")
         print("recieved move %s from player 1" % p1_move)
         g.p1Input(socket_to_local_msg(p1_move))
         send_messages_to_player1(g,p1sock)
-        print('P1:',parse_out(game.broadcastP1()))
-        print('P2:',parse_out(game.broadcastP2()))
+        print('P1:',parse_out(g.broadcastP1()))
+        print('P2:',parse_out(g.broadcastP2()))
 
         send_messages_to_player2(g,p2sock)
         p2_move = p2sock.recv(BUFFER_SIZE).decode("UTF-8")
         print("recieved move %s from player 2" % p2_move)
         g.p1Input(socket_to_local_msg(p1_move))
         send_messages_to_player2(g,p1sock)
-        print('P1:',parse_out(game.broadcastP1()))
-        print('P2:',parse_out(game.broadcastP2()))
+        print('P1:',parse_out(g.broadcastP1()))
+        print('P2:',parse_out(g.broadcastP2()))
 
 def local_to_socket_msg(lm): 
 	sm = ''
