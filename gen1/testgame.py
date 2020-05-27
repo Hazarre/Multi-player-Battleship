@@ -1,41 +1,67 @@
-import battleship
+import  battleship
+flags = battleship.FLAGS
+flags = {v: k for k, v in flags.items()}
 
 
-def messages_to_player1(g):
-    msg = g.broadcastP1()
-    if len(msg)==0:
-        msg="no message"
-    return msg
+def parse_out(m):
+	for i in range(len(m)):
+		msg = m[i]
+		if len(msg) == 2:
+			msg[0] = flags[msg[0]]
+		elif len(msg) == 3:
+			if msg[0]:
+				msg = 'you were hit at '+str((msg[1],msg[2]))
+			else:
+				msg = 'op missed at '+str((msg[1],msg[2]))
+		m[i] = msg
+	return m
 
-def messages_to_player2(g):
-    msg = g.broadcastP2()
-    if len(msg)==0:
-        msg="no message"
-    return msg
 
-def parse_move(move):
-    newMove = []
-    move = move.split()
-    newMove.append((int(move[0]), int(move[1])))
-    if len(move)==3:
-        newMove.append(battleship.ORIENTATION[move[2]])
-    return newMove
+game = battleship.Game()
 
-g = battleship.Game()
+game.NUM_SHIPS = 1
+game.reset()
+print(game.broadcastP1())
+print(game.broadcastP2())
 
-while True:
-    p1_move = input("Player 1 please enter move")
-    print("recieved move %s from player 1" % p1_move)
-    p1_move = parse_move(p1_move)
-    g.p1Input(p1_move)
-    print("move processed with result %s" % messages_to_player1(g))
+game.p1Input([2,2,1])
+print('P1:',parse_out(game.broadcastP1()))
+print('P2:',parse_out(game.broadcastP2()))
+input("")
 
-    p2_move = input("Player 2 please enter move")
-    print("recieved move %s from player 2" % p2_move)
-    p2_move = parse_move(p2_move)
-    g.p2Input(p2_move)
-    print("move processed with result %s" % messages_to_player2(g))
+game.p2Input([3,5,0])
+print('P1:',parse_out(game.broadcastP1()))
+print('P2:',parse_out(game.broadcastP2()))
+input("")
 
- 
+game.p1Input([2,5])
+print('P1:',parse_out(game.broadcastP1()))
+print('P2:',parse_out(game.broadcastP2()))
+input("")
+
+game.p2Input([2,2])
+print('P1:',parse_out(game.broadcastP1()))
+print('P2:',parse_out(game.broadcastP2()))
+input("")
+
+game.p1Input([3,5])
+print('P1:',parse_out(game.broadcastP1()))
+print('P2:',parse_out(game.broadcastP2()))
+print('')
+
+game.p2Input([2,3])
+print('P1:',parse_out(game.broadcastP1()))
+print('P2:',parse_out(game.broadcastP2()))
+print('')
+
+game.p1Input([7,8])
+print('P1:',parse_out(game.broadcastP1()))
+print('P2:',parse_out(game.broadcastP2()))
+print('')
+
+game.p2Input([2,4])
+print('P1:',parse_out(game.broadcastP1()))
+print('P2:',parse_out(game.broadcastP2()))
+print('')
 
 
