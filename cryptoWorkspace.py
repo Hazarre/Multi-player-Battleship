@@ -2,6 +2,7 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives import serialization
 
 
 def generate_keys():
@@ -30,6 +31,18 @@ def decrypt(msg, key):
 	return dc
 
 
-priv,pub = generate_keys()
-msg = encrypt(b"test", pub)
-print(decrypt(msg, priv))
+def serialize_key(key):
+	pem = key.public_bytes(
+		encoding = serialization.Encoding.PEM,
+		format = serialization.PublicFormat.SubjectPublicKeyInfo)
+	return pem
+
+def deserialize_key(ser):
+	key = serialization.load_pem_public_key(ser, backend = default_backend())
+	return key
+
+if __name__ == "__main__":
+	priv,pub = generate_keys()
+	pub = deserialize_key(serialize_key(pub))
+	msg = encrypt("test".encode("utf-8"), pub)
+	print(decrypt(msg, priv).decode("utf-8"))
