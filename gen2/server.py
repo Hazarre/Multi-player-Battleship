@@ -12,7 +12,7 @@ class Session:
         self.psockets = [p1sock,p2sock]
         self.g=Game()
         self.priv_key,self.pub_key = privkey,pubkey # RSA keys: use pub for encrypting and priv for decrypting
-        self.pkeys = []
+        self.pkeys = [p1key,p2key]
 
     def recieve(self, bufsize):
         msg = s.recv(bufsize)
