@@ -136,7 +136,7 @@ class Game:
                     o.out = TYPE["flag"] + " " + FLAGS["lost"]
                     self.state=STATE["gameover"]
             else:
-                p.out = TYPE["fire result"] + " " + RESULT['miss']
+                p.out = TYPE["fire result"] + " " + RESULT['miss'] + ' ' + str(move["x"]) + ' ' + str(move['y'])
         
         #if self.identity == 'client':  #self.identity is not "server"
         print("player %d" % (id+1))

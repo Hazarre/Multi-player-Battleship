@@ -49,16 +49,17 @@ while True:
             handle_flag(mes[1])
     
     elif mes_type == MSG_TYPE['fire result']:
+        x, y = int(mes[2]), int(mes[3])
         if mes[1] == RESULT['hit']:
-            p.enemy_board[mes[2]][mes[3]] = STATUS["hit"]
+            p.enemy_board[x][y] = STATUS["hit"]
             print("target hit at (%s,%s)" % (mes[2], mes[3]))
         else:
-            g.enemy_board[mes[2]][mes[3]] = STATUS["miss"]
+            g.enemy_board[x][y] = STATUS["miss"]
             print("target missed at (%s,%s)" % (mes[2], mes[3]))
         p.visualize()
 
     elif mes_type == MSG_TYPE['under fire']:
-        if p.take_missle[mes[1]][mes[2]] == STATUS["hit"]:
+        if p.take_missle(int(mes[1]),int(mes[2])) == STATUS["hit"]:
             print("got hit at (%s,%s)" % (mes[1], mes[2]))
         else:
             print("got lucky at (%s,%s)" % (mes[1], mes[2]))
