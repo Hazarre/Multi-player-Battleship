@@ -1,42 +1,48 @@
 from battleship import*
-
-
+from common import* 
 from time import sleep
 
-# Test 1
+# Test 1: set game to N 
+BOARD_SIZE, NUM_SHIPS, SHIP_SIZE  = 4, 1, 2
+
 g = Game()
-g.update_game("0 0 v",0)
-print(MESSAGE_DECODING[g.players[0].message])
+
+#ship placemet
+print("player1 makes move")
+g.update_game("0 0 h", 0)
+print("player1 result:", g.players[0].out)
+print("player2 result:", g.players[1].out)
+print()
+
+print("player2 makes move")
 g.update_game("0 0 v",1)
-print(MESSAGE_DECODING[g.players[1].message])
-g.update_game("1 0 v",0)
-g.update_game("1 0 v",1)
-g.update_game("2 0 v",0)
-g.update_game("2 0 v",1)
-
-for i in range(3):
-    for j in range(3):
-        g.update_game("%d %d"%(i,j),0)
-        g.update_game("%d %d"%(i,j),1)
-        print(MESSAGE_DECODING[g.players[0].message], "player1")
-        print(MESSAGE_DECODING[g.players[1].message], "player2")
+print("player1 result:", g.players[0].out)
+print("player2 result:", g.players[1].out)
+print()
 
 
-#Test 2
-# while True:
-#     print("player1's turn")
-#     mes = g.get_input_prompt()
-#     g.update_game(mes,0)
+# fire 
+print("player1 makes move")
+g.update_game("0 0",0)
+print("player1 result:", g.players[0].out)
+print("player2 result:", g.players[1].out)
+print()
 
-#     print("player2's turn")
-#     mes = g.get_input_prompt()
-#     print(g.update_game(mes,1))
-    
+print("player2 makes move")
+g.update_game("0 0",1)
+print("player1 result:", g.players[0].out)
+print("player2 result:", g.players[1].out)
+print()
 
 
-# MESSAGE_DECODING = ['input_error','placement_success','target_hit','target_miss','you_loss']
-# MESSAGE_ENCODING = {}
-# for i in range(len(MESSAGE_DECODING)):
-#     MESSAGE_ENCODING[MESSAGE_DECODING[i]] = i 
+print("player1 makes move")
+g.update_game("0 1",0)
+print("player1 result:", g.players[0].out)
+print("player2 result:", g.players[1].out)
+print()
 
-# print(MESSAGE_ENCODING)
+print("player2 makes move")
+g.update_game("0 1",1)
+print("player1 result:", g.players[0].out)
+print("player2 result:", g.players[1].out)
+print()

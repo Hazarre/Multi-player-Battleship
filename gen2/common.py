@@ -15,12 +15,11 @@ STATE ={'setup':0,      # possible game states
 MSG_TYPE = {'flag':'0', 'fire':'1', 'fire result': '1', 'ship placement': '2', 'under fire':'2'}
 TYPE = MSG_TYPE
 
-
 RESULT = {'hit':'1', 'miss':'0'}
 
 FLAGS = {   'bad input': '0',
             'wait': '1',
-            'your turn': '2',
+            'my turn': '2',
             'placed a ship': '3',
             'win': '4',
             'lost': '5', 
@@ -28,4 +27,4 @@ FLAGS = {   'bad input': '0',
 
 ORIENTATION = {'V': '1', 'H': '0', 'v': '1', 'h':'0'}
 
-BOARD_SIZE, NUM_SHIPS, SHIP_SIZE  = 4, 2, 1
+BOARD_SIZE, NUM_SHIPS, SHIP_SIZE  = 4, 1, 2

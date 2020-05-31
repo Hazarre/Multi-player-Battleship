@@ -9,18 +9,18 @@ class Session:
         self.psockets = [p1sock,p2sock]
         self.g=Game()
 
-    def update_state(self, id, mes):
-        self.psockets[id].sendall(msg.encode("utf-8"))
-
     def start_game(self):
-        forward = False
-        self.g.players[0].out = MSG_TYPE['flag'] + " " + FLAGS["my turn"]
+        start_mes = MSG_TYPE['flag'] + " " + FLAGS["my turn"]
+        self.psockets[0].sendall(start_mes.encode("utf-8"))
+
         while self.g.state != STATE["gameover"]:
             for id in range(2):
                 # player id's turn
                 print('player %ds turn' % (id+1))
+                # get move from client 
                 move = self.psockets[id].recv(BUFFER_SIZE).decode("utf-8") 
                 self.g.update_game(move,id)
+                #update results to client
                 ply_mes = self.g.players[id].out
                 opp_mes = self.g.players[(id+1)%2].out
                 self.psockets[id].sendall(ply_mes.encode("utf-8"))

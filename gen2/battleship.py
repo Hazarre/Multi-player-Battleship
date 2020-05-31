@@ -3,11 +3,11 @@ from common import *
 class Player:
     def __init__(self):
         self.my_board =  [[0] * BOARD_SIZE for _ in range(BOARD_SIZE)]
-        self.out = ""
         self.enemy_board = [[0] * BOARD_SIZE for _ in range(BOARD_SIZE)]
         self.nships_to_place = NUM_SHIPS
         self.nships_alive = NUM_SHIPS
         self.nspots_ontarget = 0
+        self.out = ""
 
     def placement_check(self, x, y, o):
         is_valid = True
@@ -17,12 +17,11 @@ class Player:
         else:
             for i in range(SHIP_SIZE):
                 is_valid = is_valid and (self.my_board[x+i][y] == STATUS['water'])
-        print(is_valid)
         return is_valid
 
     def place_ship(self, x, y, o):
         if self.placement_check(x,y,o):
-            self.nships_to_place-=1
+            self.nships_to_place -= 1
             if o == ORIENTATION['V']:
                 for i in range(SHIP_SIZE):
                     self.my_board[x][y+i] = STATUS['ship']
@@ -50,7 +49,7 @@ class Player:
             for i in range(BOARD_SIZE):
                 print(self.enemy_board[i][j], end = " ")
             print()
-        print("\n\n\n")
+        print("\n")
 
 class Game:
     state = STATE["setup"] # either SETUP or FIRE
@@ -120,10 +119,11 @@ class Game:
         if p.nships_to_place > 0:
             p.place_ship(move["x"], move['y'], move['o'])
             p.out = TYPE["flag"] + " " + FLAGS["placed a ship"]
-            o.out = TYPE["flag"] + " " + FLAGS["your turn"]
+            o.out = TYPE["flag"] + " " + FLAGS["my turn"]
             if o.nships_to_place == 0 and p.nships_to_place==0:
                 self.state = STATE["fire"]
-            return
+                p.visualize()
+                return
         
         # fire missle at p2
         elif self.state == STATE["fire"]: 
@@ -138,9 +138,9 @@ class Game:
             else:
                 p.out = TYPE["fire result"] + " " + RESULT['miss']
         
-        if self.identity == 'client':  #self.identity is not "server"
-            print("player %d" % (id+1))
-            p.visualize()
+        #if self.identity == 'client':  #self.identity is not "server"
+        print("player %d" % (id+1))
+        p.visualize()
         return 
 
     def missle_result(self,x,y,id): # id is the player that fired the missle
@@ -148,10 +148,7 @@ class Game:
             result = self.players[(id+1)%2].take_missle(x,y) #
             self.players[id].enemy_board[x][y] = result
             return result
-        elif : 
-            # handled by client.py
-            # send request to the server for response 
-            pass
+        return None
 
     def check_win(self, id):
         return self.players[id].nspots_ontarget == NUM_SHIPS*SHIP_SIZE

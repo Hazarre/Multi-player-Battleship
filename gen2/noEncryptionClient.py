@@ -43,7 +43,7 @@ while True:
     mes_type = mes[0]
 
     if mes_type == MSG_TYPE['flag']:
-        if mes[1] == FLAGS["your turn"]:
+        if mes[1] == FLAGS["my turn"]:
             make_move()
         else: 
             handle_flag(mes[1])
