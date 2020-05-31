@@ -6,22 +6,16 @@ import cryptoWorkspace as cw
 PORT = 8080
 BUFFER_SIZE = 1024
 
-
 class Session:
-    def __init__(self, p1sock, p2sock, p1key,p2key,privkey,pubkey):
+    def __init__(self, p1sock, p2sock):
         self.psockets = [p1sock,p2sock]
         self.g=Game()
-        self.priv_key,self.pub_key = privkey,pubkey # RSA keys: use pub for encrypting and priv for decrypting
-        self.pkeys = [p1key,p2key]
-
-    def recieve(self, bufsize):
-        msg = s.recv(bufsize)
-        msg = cw.decrypt(msg, self.priv_key).decode("utf-8")
-        return msg
+        # self.priv_key, self.pub_key = privkey, pubkey # RSA keys: use pub for encrypting and priv for decrypting
+        # self.pkeys = [p1key,p2key]
 
     def update_state(self, id, state):
         msg = MESSAGE_ENCODING[state]
-        self.psockets[id].sendall(cw.encrypt(msg.encode("utf-8"),self.pkeys[id]))
+        self.psockets[id].sendall(msg.encode("utf-8"))
 
     def start_game(self):
         forward = False
@@ -52,10 +46,8 @@ class Session:
                 self.update_state(id, self.g.players[id].message)
                 print('end')
 
-
-def start_session(p1sock, p2sock,p1key,p2key,privkey,pubkey):
-    Session(p1sock, p2sock,p1key,p2key,privkey,pubkey).start_game()
-
+def start_session(p1sock,p2sock):
+    Session(p1sock,p2sock).start_game()
 
 # multiprocess server
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -64,18 +56,13 @@ s.setblocking(True)
 s.bind((socket.gethostname(), PORT))
 s.listen(50)
 print("waiting")
-privkey,pubkey = cw.generate_keys()
 while True:
     try:
         p1sock, p1addr = s.accept()
-        p1sock.sendall(cw.serialize_key(pubkey))
-        p1key = p1sock.recv(3).decode("utf-8")
         print("connected to player 1")
         p2sock, p2addr = s.accept()
-        p2sock.sendall(cw.serialize_key(pubkey))
-        p2key = p2sock.recv(3).decode("utf-8")
         print("connected to player 2")
-        p = Process(target=start_session, args=(p1sock, p2sock,p1key,p2key,privkey,pubkey))
+        p = Process(target=start_session, args=(p1sock, p2sock))
         p.start()
     except socket.error:
         print('got a socket error')
