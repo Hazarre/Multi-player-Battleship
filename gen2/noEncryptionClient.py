@@ -1,7 +1,7 @@
 import socket
 from battleship import*
 from common import *
-import cryptoWorkspace as cw
+#import cryptoWorkspace as cw
 
 def socket_to_server():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -33,8 +33,8 @@ s = socket_to_server()
 print("connected to server")
 
 def make_move():
-    move = process_input(g.get_input_prompt())
-    g.update_game(move)
+    move = g.get_input_prompt()
+    g.update_game(move, 0)
     print("making move %s" % move)
     s.sendall(move.encode("utf-8"))
 

@@ -130,7 +130,7 @@ class Game:
             o.out = TYPE["under fire"] + " " + str(move["x"]) + ' ' + str(move['y'])
             if self.missle_result(move["x"], move['y'], id) == STATUS["hit"]:
                 p.nspots_ontarget += 1
-                p.out = TYPE["fire result"] + " " + RESULT['hit']
+                p.out = TYPE["fire result"] + " " + RESULT['hit'] + ' ' + str(move["x"]) + ' ' + str(move['y'])
                 if self.check_win(id):
                     p.out = TYPE["flag"] + " " + FLAGS["win"]
                     o.out = TYPE["flag"] + " " + FLAGS["lost"]
