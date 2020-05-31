@@ -2,50 +2,30 @@ from multiprocessing import Process
 import socket
 from time import sleep
 from battleship import *
-import cryptoWorkspace as cw
-PORT = 8080
-BUFFER_SIZE = 1024
+from common import *
 
 class Session:
     def __init__(self, p1sock, p2sock):
         self.psockets = [p1sock,p2sock]
         self.g=Game()
-        # self.priv_key, self.pub_key = privkey, pubkey # RSA keys: use pub for encrypting and priv for decrypting
-        # self.pkeys = [p1key,p2key]
 
-    def update_state(self, id, state):
-        msg = MESSAGE_ENCODING[state]
+    def update_state(self, id, mes):
         self.psockets[id].sendall(msg.encode("utf-8"))
 
     def start_game(self):
         forward = False
-        while True:
+        self.g.players[0].out = MSG_TYPE['flag'] + " " + FLAGS["my turn"]
+        while self.g.state != STATE["gameover"]:
             for id in range(2):
                 # player id's turn
-                print('start %d' %id)
-                print('state %d' %self.g.state)
-                self.update_state(id,'my_turn')
-                if self.g.state == STATE["fire"]:
-                    forward = True
-                print('getting player%ds move' %(id+1))
+                print('player %ds turn' % (id+1))
                 move = self.psockets[id].recv(BUFFER_SIZE).decode("utf-8") 
-                print("recieved move %s from player %d" % (move, id+1))
                 self.g.update_game(move,id)
-                if forward: # let enemy know where they got hit
-                    print('fstart')
-                    self.update_state((id+1)%2, 'under_fire')
-                    print('fstart1')
-                    self.psockets[(id+1)%2].sendall(move.encode("utf-8"))
-                    print('fend')
-                if self.g.state == STATE["gameover"]:
-                    print("gameover")
-                    self.update_state(id, 'you_win')
-                    self.update_state((id+1)%2,'you_lost')
-                    break
-                print('before end')
-                self.update_state(id, self.g.players[id].message)
-                print('end')
-
+                ply_mes = self.g.players[id].out
+                opp_mes = self.g.players[(id+1)%2].out
+                self.psockets[id].sendall(ply_mes.encode("utf-8"))
+                self.psockets[(id+1)%2].sendall(opp_mes.encode("utf-8"))
+            
 def start_session(p1sock,p2sock):
     Session(p1sock,p2sock).start_game()
 

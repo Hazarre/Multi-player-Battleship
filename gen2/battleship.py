@@ -1,28 +1,9 @@
-# game meta data
-client = True
-
-STATUS = {  'water': 0,
-            'ship': 1,
-            'miss':2,
-            'hit':3}
-
-STATE ={'setup':0,      # possible game states
-        'fire':1,
-        'gameover':2,
-         }
-
-
-MESSAGE_DECODING = ['padding','my_turn','waiting','input_error','placement_success','target_hit','target_miss','you_loss','you_win', 'under_fire']
-MESSAGE_ENCODING = {}
-for i in range(len(MESSAGE_DECODING)):
-    MESSAGE_ENCODING[MESSAGE_DECODING[i]] = str(i) 
-
-ORIENTATION = {'V': 1, 'H': 0, 'v': 1, 'h':0}
-BOARD_SIZE, NUM_SHIPS, SHIP_SIZE  = 10 , 2, 1
+from common import *
 
 class Player:
     def __init__(self):
         self.my_board =  [[0] * BOARD_SIZE for _ in range(BOARD_SIZE)]
+        self.out = ""
         self.enemy_board = [[0] * BOARD_SIZE for _ in range(BOARD_SIZE)]
         self.nships_to_place = NUM_SHIPS
         self.nships_alive = NUM_SHIPS
@@ -52,7 +33,7 @@ class Player:
         return False 
     
     def take_missle(self,x,y):
-        if self.my_board[x][y]==STATUS['ship']:
+        if self.my_board[x][y] == STATUS['ship']:
             self.my_board[x][y] = STATUS["hit"]
             return STATUS["hit"]
         self.my_board[x][y] = STATUS["miss"]
@@ -118,46 +99,56 @@ class Game:
                 x_max -= SHIP_SIZE
         return move['x'] <= x_max and move['x'] >= 0 and move['y'] <= y_max and move['y'] >= 0
 
+
     def update_game(self, str_in, id):
         if self.state ==STATE["gameover"]:
             print("You Lost")
             return
         # process move specified by input string str_in and changes game state
         move = self.parse_input(str_in)
+
         # player id is 0 for player1 and 1 for player2
         p, o = self.players[id], self.players[(id+1)%2]  #player with id
+
+        # input error
         if not self.move_check(move):
-            p.message = "input_error"
+            p.out = TYPE["flag"] + " " + FLAGS["bad input"]
+            o.out = TYPE["flag"] + " " + FLAGS["wait"]
             return
+
         # place ship   
         if p.nships_to_place > 0:
             p.place_ship(move["x"], move['y'], move['o'])
-            p.message = "placement_success"
+            p.out = TYPE["flag"] + " " + FLAGS["placed a ship"]
+            o.out = TYPE["flag"] + " " + FLAGS["your turn"]
             if o.nships_to_place == 0 and p.nships_to_place==0:
                 self.state = STATE["fire"]
+            return
+        
         # fire missle at p2
         elif self.state == STATE["fire"]: 
-            o.message = 'under_fire'
+            o.out = TYPE["under fire"] + " " + str(move["x"]) + ' ' + str(move['y'])
             if self.missle_result(move["x"], move['y'], id) == STATUS["hit"]:
                 p.nspots_ontarget += 1
-                p.message = 'target_hit'
+                p.out = TYPE["fire result"] + " " + RESULT['hit']
                 if self.check_win(id):
-                    p.message = "you_win"
+                    p.out = TYPE["flag"] + " " + FLAGS["win"]
+                    o.out = TYPE["flag"] + " " + FLAGS["lost"]
                     self.state=STATE["gameover"]
             else:
-                p.message = 'target_miss'
-        if True:  #self.identity is not "server"
+                p.out = TYPE["fire result"] + " " + RESULT['miss']
+        
+        if self.identity == 'client':  #self.identity is not "server"
             print("player %d" % (id+1))
             p.visualize()
         return 
-
 
     def missle_result(self,x,y,id): # id is the player that fired the missle
         if self.identity is "server": # if the machine is the server
             result = self.players[(id+1)%2].take_missle(x,y) #
             self.players[id].enemy_board[x][y] = result
             return result
-        else: 
+        elif : 
             # handled by client.py
             # send request to the server for response 
             pass
