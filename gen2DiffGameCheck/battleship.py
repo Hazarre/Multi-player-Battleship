@@ -152,4 +152,3 @@ class Game:
 
     def check_win(self, id):
         return self.players[id].nspots_ontarget == NUM_SHIPS*SHIP_SIZE
-
