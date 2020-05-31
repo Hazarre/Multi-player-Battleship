@@ -1,4 +1,15 @@
 # game meta data
+
+# Mesage protocal 
+# Server -> client messages:
+# 		0 - denotes a flag message - '0 flag#'
+# 		1 - denotes the results of the previous shot - '1 1 x y'= hit '1 0 x y' = miss at (x, y) 
+# 		2 - denotes the coordinates of an incoming shot - '2 x y' = enemy has fired on (x,y)
+
+# Client -> Server messages:
+# 		"x y o" - denotes a ship placement. For example, "0 0 v" is a vertical placement with top at (0,0). "0 0 h" would be for horizontal
+# 		"x y" - denates firing a missle at (x,y)
+
 PORT = 8080
 BUFFER_SIZE = 20
 
