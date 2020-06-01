@@ -5,8 +5,6 @@
 Client side game code for networked battleship game.
 Keeps track of game state, taking updates from server,
 and sending out moves on players turn.
-
-Author: Ansel Tessier (at9088@bard.edu)
 """
 
 import threading
