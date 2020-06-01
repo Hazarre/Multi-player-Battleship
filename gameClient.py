@@ -34,8 +34,9 @@ enemyboard = numpy.zeros((10,10), dtype=None, order='c')
 myboard = numpy.zeros((10,10), dtype=None, order='c')
 threadflag = 0 #threading flag
 gameflag = 0
-game_play = True
+game_play = False
 last_shot = (-1,-1) #cords and bool hit (0=false)
+state = 'setup'
 
 flagdict = {
     1 : "Wait your turn",
@@ -59,6 +60,7 @@ class listener(threading.Thread):
         global enemyboard
         global myboard
         global game_play
+        global state
         global gameflag
         global threadflag
         global last_shot
@@ -120,6 +122,10 @@ class game_core(threading.Thread):
         global last_shot
         global s
 
+        if(game_play == False):
+            game_play = True
+            #s.sendall((bytes(,'utf-8'))
+
         self.k = 0
         self.cursor_x = 0
         self.cursor_y = 0
@@ -133,7 +139,7 @@ class game_core(threading.Thread):
         curses.init_pair(3, curses.COLOR_BLACK, curses.COLOR_WHITE)
         # Loop where k is the last character pressed
         while (self.k != ord('q')):
-            print('hello', self.k)
+
             #updating instance vars from listener theread
         #    if threadflag == 1:
                 # TODO: migrate exsisting code here
@@ -163,7 +169,12 @@ class game_core(threading.Thread):
             self.cursor_y = min(self.height-1, self.cursor_y)
 
             if self.k == ord(' '):
-                s.sendall(bytes(str((self.cursor_x//4, self.cursor_y//2)),'utf-8'))
+                mark = '1 '
+                xsend = str(self.cursor_x//4)
+                ysend = str(self.cursor_y//2)
+                sendmsg = mark + xsend + ' ' + ysend
+                s.sendall(bytes(sendmsg,'utf-8'))
+                print(sendmsg)
                 last_shot = (self.cursor_x//4, self.cursor_y//2)
 
             #status bar
