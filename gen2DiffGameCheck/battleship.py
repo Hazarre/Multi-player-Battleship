@@ -29,15 +29,15 @@ class Player:
                 for i in range(SHIP_SIZE):
                     self.my_board[x+i][y] = STATUS['ship']
             return True
-        return False 
-    
+        return False
+
     def take_missle(self,x,y):
         if self.my_board[x][y] == STATUS['ship']:
             self.my_board[x][y] = STATUS["hit"]
             return STATUS["hit"]
         self.my_board[x][y] = STATUS["miss"]
         return STATUS["miss"]
-    
+
     def visualize(self):
         print("My Game Board: ")
         for j in range(BOARD_SIZE):
@@ -62,7 +62,7 @@ class Game:
         self.players = [self.p1, self.p2]
         self.state = STATE["setup"]
         self.identity = "server" # or server
- 
+
     def set_identity(self, identity):
         self.identity = identity
         if self.identity is not "server": # client
@@ -70,13 +70,13 @@ class Game:
 
     def get_input_prompt(self):
         if self.state == STATE["setup"]:
-            mes = "Please place your ship with its upper left coordinate (0<x,y<10) and orientation(V or H) x y o: \n" 
+            mes = "Please place your ship with its upper left coordinate (0<x,y<10) and orientation(V or H) x y o: \n"
         elif self.state == STATE["fire"]:
-            mes = "Please fire your missle towards x y: \n" 
+            mes = "Please fire your missle towards x y: \n"
         elif self.state == STATE["gameover"]:
             mes = "GAMEOVER\n"
         return input(mes)
-        
+
     def parse_input(self,str_in): # str_inshould be str()
         str_in = str_in.split()
         if (len(str_in) < 3 and self.state == STATE["setup"]) or len(str_in) < 2:
@@ -85,9 +85,9 @@ class Game:
         move['x'] = int(str_in[0])
         move['y'] = int(str_in[1])
         if len(str_in) >= 3 and self.state == STATE["setup"]:
-            move['o'] = ORIENTATION[str_in[2]]
+            move['o'] = ORIENTATION[str_in[3]]
         return move
-    
+
     # this method checks if the input is of valid format for the game state
     def move_check(self, move):
         x_max, y_max = BOARD_SIZE, BOARD_SIZE
@@ -115,7 +115,7 @@ class Game:
             o.out = TYPE["flag"] + " " + FLAGS["wait"]
             return
 
-        # place ship   
+        # place ship
         if p.nships_to_place > 0:
             p.place_ship(move["x"], move['y'], move['o'])
             p.out = TYPE["flag"] + " " + FLAGS["placed a ship"]
@@ -124,9 +124,9 @@ class Game:
                 self.state = STATE["fire"]
                 p.visualize()
                 return
-        
+
         # fire missle at p2
-        elif self.state == STATE["fire"]: 
+        elif self.state == STATE["fire"]:
             o.out = TYPE["under fire"] + " " + str(move["x"]) + ' ' + str(move['y'])
             if self.missle_result(move["x"], move['y'], id) == STATUS["hit"]:
                 p.nspots_ontarget += 1
@@ -137,11 +137,11 @@ class Game:
                     self.state=STATE["gameover"]
             else:
                 p.out = TYPE["fire result"] + " " + RESULT['miss'] + ' ' + str(move["x"]) + ' ' + str(move['y'])
-        
+
         #if self.identity == 'client':  #self.identity is not "server"
         print("player %d" % (id+1))
         p.visualize()
-        return 
+        return
 
     def missle_result(self,x,y,id): # id is the player that fired the missle
         if self.identity is "server": # if the machine is the server

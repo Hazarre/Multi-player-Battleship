@@ -56,6 +56,7 @@ class listener(threading.Thread):
         threading.Thread.__init__(self)
         self.name = name
 
+
     def run(self):
         global enemyboard
         global myboard
@@ -96,6 +97,7 @@ class game_core(threading.Thread):
     def __init__(self, name):
         threading.Thread.__init__(self)
         self.name = name
+        self.dir = False
     def run(self):
         curses.wrapper(self.display)
 
@@ -168,9 +170,26 @@ class game_core(threading.Thread):
             self.cursor_y = max(0, self.cursor_y)
             self.cursor_y = min(self.height-1, self.cursor_y)
 
+
             if self.k == ord(' '):
-                if state == 'stup':
-                    #get last two key strokes to define placement and orientation
+                if state == 'setup':
+                    ort=None
+                    if (not self.dir):
+                        anchor = (self.cursor_x, self.cursor_y)
+                        self.dir = True
+                    else:
+                        if(anchor[0] != self.cursor_x):
+                            ort=' H'
+                        else:
+                            ort = ' V'
+                        self.dir = False
+                        mark = '2 '
+                        xsend = str(self.cursor_x//4)
+                        ysend = str(self.cursor_y//2)
+                        sendmsg = mark + xsend + ' ' + ysend + ort
+                        s.sendall(bytes(sendmsg,'utf-8'))
+                        print(sendmsg)
+
                 elif state == 'play':
                     mark = '1 '
                     xsend = str(self.cursor_x//4)

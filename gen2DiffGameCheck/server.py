@@ -17,15 +17,16 @@ class Session:
             for id in range(2):
                 # player id's turn
                 print('player %ds turn' % (id+1))
-                # get move from client 
-                move = self.psockets[id].recv(BUFFER_SIZE).decode("utf-8") 
+                # get move from client
+                move = self.psockets[id].recv(BUFFER_SIZE).decode("utf-8")
+                print(move)
                 self.g.update_game(move,id)
                 #update results to client
                 ply_mes = self.g.players[id].out
                 opp_mes = self.g.players[(id+1)%2].out
                 self.psockets[id].sendall(ply_mes.encode("utf-8"))
                 self.psockets[(id+1)%2].sendall(opp_mes.encode("utf-8"))
-            
+
 def start_session(p1sock,p2sock):
     Session(p1sock,p2sock).start_game()
 
@@ -33,7 +34,7 @@ def start_session(p1sock,p2sock):
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 s.setblocking(True)
-s.bind((socket.gethostname(), PORT))
+s.bind(('127.0.0.1', 65432))
 s.listen(50)
 print("waiting")
 while True:
