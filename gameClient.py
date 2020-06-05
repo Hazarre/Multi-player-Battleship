@@ -169,13 +169,16 @@ class game_core(threading.Thread):
             self.cursor_y = min(self.height-1, self.cursor_y)
 
             if self.k == ord(' '):
-                mark = '1 '
-                xsend = str(self.cursor_x//4)
-                ysend = str(self.cursor_y//2)
-                sendmsg = mark + xsend + ' ' + ysend
-                s.sendall(bytes(sendmsg,'utf-8'))
-                print(sendmsg)
-                last_shot = (self.cursor_x//4, self.cursor_y//2)
+                if state == 'stup':
+                    #get last two key strokes to define placement and orientation
+                elif state == 'play':
+                    mark = '1 '
+                    xsend = str(self.cursor_x//4)
+                    ysend = str(self.cursor_y//2)
+                    sendmsg = mark + xsend + ' ' + ysend
+                    s.sendall(bytes(sendmsg,'utf-8'))
+                    print(sendmsg)
+                    last_shot = (self.cursor_x//4, self.cursor_y//2)
 
             #status bar
             self.statusbarstr = "Press 'q' to exit | Target with arrow keys, fire with space | Target: {}, {}".format(self.cursor_x//4, self.cursor_y//2)
