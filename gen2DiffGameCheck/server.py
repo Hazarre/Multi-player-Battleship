@@ -10,9 +10,11 @@ class Session:
         self.g=Game()
 
     def start_game(self):
+        # ask player 1 to make a move
         start_mes = MSG_TYPE['flag'] + " " + FLAGS["my turn"]
         self.psockets[0].sendall(start_mes.encode("utf-8"))
 
+        # ask each player for a move then send the result of the move to both players
         while self.g.state != STATE["gameover"]:
             for id in range(2):
                 # player id's turn
@@ -27,6 +29,7 @@ class Session:
                 self.psockets[id].sendall(ply_mes.encode("utf-8"))
                 self.psockets[(id+1)%2].sendall(opp_mes.encode("utf-8"))
 
+# starts a battleship game session
 def start_session(p1sock,p2sock):
     Session(p1sock,p2sock).start_game()
 

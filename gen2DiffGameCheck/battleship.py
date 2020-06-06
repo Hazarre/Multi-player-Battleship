@@ -1,15 +1,15 @@
 from common import *
 
-class Player:
+class Player: # a player of the battleship game
     def __init__(self):
         self.my_board =  [[0] * BOARD_SIZE for _ in range(BOARD_SIZE)]
         self.enemy_board = [[0] * BOARD_SIZE for _ in range(BOARD_SIZE)]
         self.nships_to_place = NUM_SHIPS
-        self.nships_alive = NUM_SHIPS
         self.nspots_ontarget = 0
         self.out = ""
 
     def placement_check(self, x, y, o):
+        # checks whether a ship placement can be done (i.e. no obstacles, no repeated placement).
         is_valid = True
         if o == ORIENTATION['V']:
             for i in range(SHIP_SIZE):
@@ -20,6 +20,7 @@ class Player:
         return is_valid
 
     def place_ship(self, x, y, o):
+        # place the ship with top left at (x,y) and orientation o, which can be "v" (vertical) or "h" (horizontal)
         if self.placement_check(x,y,o):
             self.nships_to_place -= 1
             if o == ORIENTATION['V']:
@@ -32,6 +33,7 @@ class Player:
         return False
 
     def take_missle(self,x,y):
+        # if a player is hit by a missle at (x,y)
         if self.my_board[x][y] == STATUS['ship']:
             self.my_board[x][y] = STATUS["hit"]
             return STATUS["hit"]
@@ -39,6 +41,7 @@ class Player:
         return STATUS["miss"]
 
     def visualize(self):
+        # prints out the game boards
         print("My Game Board: ")
         for j in range(BOARD_SIZE):
             for i in range(BOARD_SIZE):
@@ -61,14 +64,18 @@ class Game:
         self.p2 = Player()
         self.players = [self.p1, self.p2]
         self.state = STATE["setup"]
-        self.identity = "server" # or server
+        self.identity = "server" # or "client"
 
     def set_identity(self, identity):
+        # in the client program the player is p1 and the opponent is always p2
+        # only the server uses two players
         self.identity = identity
-        if self.identity is not "server": # client
+        if self.identity is not "server": 
             self.p2.nships_to_place = 0
 
     def get_input_prompt(self):
+        # shows cmdline prompts to ask for player input depending on what game state is currently at
+        # used by the client only
         if self.state == STATE["setup"]:
             mes = "Please place your ship with its upper left coordinate (0<x,y<10) and orientation(V or H) x y o: \n"
         elif self.state == STATE["fire"]:
@@ -77,7 +84,9 @@ class Game:
             mes = "GAMEOVER\n"
         return input(mes)
 
-    def parse_input(self,str_in): # str_inshould be str()
+    def parse_input(self,str_in): 
+        # str_in should be str()
+        # takes in a string of move "1 1 v" and convert it into format for game function calls
         str_in = str_in.split()
         if (len(str_in) < 3 and self.state == STATE["setup"]) or len(str_in) < 2:
             print("input error")
@@ -88,8 +97,8 @@ class Game:
             move['o'] = ORIENTATION[str_in[3]]
         return move
 
-    # this method checks if the input is of valid format for the game state
     def move_check(self, move):
+        # this method checks if the input is of valid format for the game state
         x_max, y_max = BOARD_SIZE, BOARD_SIZE
         if self.state == STATE["setup"] and len(move)>=3:
             if move['o'] == ORIENTATION['V']:
@@ -100,10 +109,11 @@ class Game:
 
 
     def update_game(self, str_in, id):
+        # process move specified by input string str_in and changes game state
         if self.state ==STATE["gameover"]:
             print("You Lost")
             return
-        # process move specified by input string str_in and changes game state
+            
         move = self.parse_input(str_in)
 
         # player id is 0 for player1 and 1 for player2

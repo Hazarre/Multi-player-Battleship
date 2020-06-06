@@ -4,6 +4,7 @@ from common import *
 #import cryptoWorkspace as cw
 
 def socket_to_server():
+    #connects to the server
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     s.setblocking(True)
@@ -11,11 +12,13 @@ def socket_to_server():
     return s
 
 def handle_flag(flag):
+    # prints out flag messages 
     for mes in FLAGS: 
         if flag == FLAGS[mes] and flag != FLAGS["wait"]:
             print(mes)
 
-def process_input(s): # convert command line input into format for function call on battleship.py
+def process_input(s):
+    # convert command line input into format for function call on battleship.py
     l = s.split()
     if len(s) == 3:
         return MSG_TYPE['ship placement'] + " " + s
@@ -24,7 +27,8 @@ def process_input(s): # convert command line input into format for function call
     else: 
         print("input error")
 
-g = Game()
+
+g = Game() # start game
 g.set_identity("client")
 p = g.players[0] #player 
 o = g.players[1] #opponent 
@@ -33,6 +37,7 @@ s = socket_to_server()
 print("connected to server")
 
 def make_move():
+    # asks user for move input and updates game for both at local and the server
     move = g.get_input_prompt()
     g.update_game(move, 0)
     print("making move %s" % move)
@@ -54,7 +59,7 @@ while True:
             p.enemy_board[x][y] = STATUS["hit"]
             print("target hit at (%s,%s)" % (mes[2], mes[3]))
         else:
-            g.enemy_board[x][y] = STATUS["miss"]
+            p.enemy_board[x][y] = STATUS["miss"]
             print("target missed at (%s,%s)" % (mes[2], mes[3]))
         p.visualize()
 
